@@ -20,14 +20,26 @@ namespace Filesharp
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Operations index
+        const int move = 0;
+        const int delete = 1;
+        const int createFiles = 2;
+        const int sort = 3;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
+            int operationToExecute = comboBox1.SelectedIndex;
 
+            if (operationToExecute == move)
+            {
+                // Move()
+            }
+            else if (Oper)
         }
     }
 }
