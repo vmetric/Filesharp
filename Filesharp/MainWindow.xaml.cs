@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Linq;
 
 namespace Filesharp
 {
@@ -31,15 +21,36 @@ namespace Filesharp
             InitializeComponent();
         }
 
+        public void startMove(string sourceDir, string destDir, string filetype, string recursive)
+        {
+            if (recursive == "True" || recursive == "true")
+            {
+                var filesToMove = Directory.EnumerateFiles(sourceDir, "*")
+            .Where(s => s.EndsWith(filetype, StringComparison.OrdinalIgnoreCase));
+                MessageBox.Show(filesToMove.ToString());
+            }
+        }
+
         private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
             int operationToExecute = comboBox1.SelectedIndex;
 
             if (operationToExecute == move)
             {
-                // Move()
+                startMove(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
             }
-            else if (Oper)
+            else if (operationToExecute == delete)
+            {
+                // delete()
+            }
+            else if (operationToExecute == createFiles)
+            {
+                // createFiles()
+            }
+            else
+            {
+                // sort()
+            }
         }
     }
 }
