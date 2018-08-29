@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Linq;
+using System.Windows.Controls;
 
 namespace Filesharp
 {
@@ -21,13 +21,38 @@ namespace Filesharp
             InitializeComponent();
         }
 
+        public void hideControl(Control control)
+        {
+            control.Visibility = Visibility.Hidden;
+        }
+        public void showControl(Control control)
+        {
+            control.Visibility = Visibility.Visible;
+        }
+
         public void startMove(string sourceDir, string destDir, string filetype, string recursive)
         {
             if (recursive == "True" || recursive == "true")
             {
-                var filesToMove = Directory.EnumerateFiles(sourceDir, "*")
-            .Where(s => s.EndsWith(filetype, StringComparison.OrdinalIgnoreCase));
-                MessageBox.Show(filesToMove.ToString());
+                // NOTE TO SELF: directory.getfiles SHOULD WORK!
+                // Look into it!
+                string[] filesToMove = Directory.GetFiles(sourceDir, "*" + filetype);
+                try
+                {
+                    MessageBox.Show(filesToMove[1]);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Error!");
+                    throw;
+                }
+
+
+              //  var filesToMove = Directory.EnumerateFiles(sourceDir, "*.*")
+           // .Where(s => s.EndsWith(filetype, StringComparison.OrdinalIgnoreCase));
+
+               // string[] filesArray = filesToMove.ToArray<string>();
+               // MessageBox.Show(filesToMove.ToString());
             }
         }
 
