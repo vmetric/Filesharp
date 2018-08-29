@@ -30,10 +30,14 @@ namespace Filesharp
             control.Visibility = Visibility.Visible;
         }
 
-        public void startMove(string sourceDir, string destDir, string filetype, string recursive)
+        public void startMove(string sourceDir, string destDir, string filetype)
         {
-            if (recursive == "True" || recursive == "true")
-            {
+            textbox1.Text = "Source directory (e.g., C:\\1\\)";
+            textbox2.Text = "Destination directory (e.g., C:\\2\\";
+            textbox3.Text = "Filetype to move (e.g., .png)";
+
+            hideControl(textbox4);
+            
                 // NOTE TO SELF: directory.getfiles SHOULD WORK!
                 // Look into it!
                 string[] filesToMove = Directory.GetFiles(sourceDir, "*" + filetype);
@@ -53,7 +57,7 @@ namespace Filesharp
 
                // string[] filesArray = filesToMove.ToArray<string>();
                // MessageBox.Show(filesToMove.ToString());
-            }
+            
         }
 
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -62,7 +66,7 @@ namespace Filesharp
 
             if (operationToExecute == move)
             {
-                startMove(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
+                startMove(textbox1.Text, textbox2.Text, textbox3.Text);
             }
             else if (operationToExecute == delete)
             {
