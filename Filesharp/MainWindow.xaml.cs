@@ -16,11 +16,6 @@ namespace Filesharp
         const int createFiles = 2;
         const int sort = 3;
 
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
         public void hideControl(Control control)
         {
             control.Visibility = Visibility.Hidden;
@@ -47,10 +42,10 @@ namespace Filesharp
             }
             catch (System.IO.DirectoryNotFoundException)
             {
-                MessageBox.Show("Error: No such directory!");
+                MessageBox.Show("Error: Directory not found");
                 return;
             }
-            MessageBox.Show("Successfully moved " + filesMoved.ToString() + " files!");
+            MessageBox.Show("Successfully moved " + filesMoved.ToString() + " files");
         }
         public void startDelete(string sourceDirectory, string filetype)
         {
@@ -69,10 +64,29 @@ namespace Filesharp
             }
             catch (System.IO.DirectoryNotFoundException)
             {
-                MessageBox.Show("Error: No such directory!");
+                MessageBox.Show("Error: Directory not found");
                 return;
             }
-            MessageBox.Show("Successfully moved " + filesDeleted.ToString() + " files!");
+            MessageBox.Show("Successfully deleted " + filesDeleted.ToString() + " files");
+        }
+        public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
+        {
+            try
+            {
+                int sizeInBytes = Int32.Parse(sizeInMB) * 1000000;
+                int filesMade = 0;
+                for (int i = 0; i < Int32.Parse(numOfFiles); i++)
+                {
+                    System.IO.File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
+                    filesMade++;
+                }
+                MessageBox.Show("Successfully made " + filesMade.ToString() + " files");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error!");
+                return;
+            }
         }
 
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -89,7 +103,7 @@ namespace Filesharp
             }
             else if (operationToExecute == createFiles)
             {
-                // createFiles()
+                startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
             }
             else
             {
@@ -110,14 +124,22 @@ namespace Filesharp
                 textbox3.Text = "Filetype to move (e.g., .png)";
 
                 hideControl(textbox4);
-            }
-            if (comboBox1.SelectedIndex == delete)
+            } else if (comboBox1.SelectedIndex == delete)
             {
                 textbox1.Text = "Directory to delete files from (e.g., C:\\1\\)";
                 textbox2.Text = "Filetype to delete (e.g., .png)";
 
                 hideControl(textbox3);
                 hideControl(textbox4);
+            } else if (comboBox1.SelectedIndex == createFiles)
+            {
+                showControl(textbox3);
+                showControl(textbox4);
+
+                textbox1.Text = "Directory to create files (e.g., C:\\1\\)";
+                textbox2.Text = "Filetype to create (e.g., .png)";
+                textbox3.Text = "Number of files to create (must be integer)";
+                textbox4.Text = "Size to make files (in MB, must be integer)";
             }
         }
     }
