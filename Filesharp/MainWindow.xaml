@@ -29,7 +29,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="10,8,0,0" TextWrapping="Wrap" Text="Select the operation you'd like to execute:" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="222"/>
         <ComboBox x:Name="comboBox1" Grid.Column="2" HorizontalAlignment="Left" Margin="12.333,0,0,0" VerticalAlignment="Top" Width="120" Height="25" SelectionChanged="comboBox1SelChanged" DropDownClosed="cb1_dropDownClosed">
             <ComboBoxItem Content="Move"/>
-            <ComboBoxItem Content="Delete" IsEnabled="False"/>
+            <ComboBoxItem Content="Delete"/>
             <ComboBoxItem Content="File Creation" IsEnabled="False"/>
             <ComboBoxItem Content="Sort" IsEnabled="False"/>
         </ComboBox>

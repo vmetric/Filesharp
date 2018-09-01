@@ -29,7 +29,6 @@ namespace Filesharp
         {
             control.Visibility = Visibility.Visible;
         }
-
         public void startMove(string sourceDirectory, string destDirectory, string filetype)
         {
             int filesMoved = 0;
@@ -46,13 +45,34 @@ namespace Filesharp
                     filesMoved++;
                 }
             }
-            catch (Exception)
+            catch (System.IO.DirectoryNotFoundException)
             {
-                MessageBox.Show("Error!");
+                MessageBox.Show("Error: No such directory!");
                 return;
-                //throw;
             }
             MessageBox.Show("Successfully moved " + filesMoved.ToString() + " files!");
+        }
+        public void startDelete(string sourceDirectory, string filetype)
+        {
+            int filesDeleted = 0;
+            DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+            FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
+
+            try
+            {
+                foreach (FileInfo fileToDelete in filesToDelete)
+                {
+                    File.Delete(sourceDirectory + fileToDelete.ToString());
+
+                    filesDeleted++;
+                }
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                MessageBox.Show("Error: No such directory!");
+                return;
+            }
+            MessageBox.Show("Successfully moved " + filesDeleted.ToString() + " files!");
         }
 
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -65,7 +85,7 @@ namespace Filesharp
             }
             else if (operationToExecute == delete)
             {
-                // delete()
+                startDelete(textbox1.Text, textbox2.Text);
             }
             else if (operationToExecute == createFiles)
             {
