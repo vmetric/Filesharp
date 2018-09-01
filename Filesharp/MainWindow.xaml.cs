@@ -88,6 +88,58 @@ namespace Filesharp
                 return;
             }
         }
+        public void startSort(string sourceDirectory, string destDirectory, string intensity)
+        {
+            // Look into Dictionary for optimization
+            // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
+            // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
+
+            int filesSorted = 0;
+            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
+            string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
+            string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
+            string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
+            
+
+            Directory.CreateDirectory(sourceDirectory + "Pictures\\");
+            Directory.CreateDirectory(sourceDirectory + "Documents\\");
+            Directory.CreateDirectory(sourceDirectory + "Videos\\");
+            Directory.CreateDirectory(sourceDirectory + "Audio\\");
+            DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+
+            try
+            {
+                FileInfo[] picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]);
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                MessageBox.Show("Error: Directory not found");
+                return;
+            }
+
+            foreach (string filetype in pictureFiletypes)
+            {
+                
+
+                FileInfo[] file = sourceDir.GetFiles("*" + filetype);
+
+            }
+
+            try
+            {
+                foreach (FileInfo fileToMove in filesToMove)
+                {
+                    File.Move(sourceDirectory + fileToMove.ToString(), filetypeDirectory + "\\" + fileToMove.ToString());
+
+                    filesSorted++;
+                }
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                MessageBox.Show("Error: Directory not found");
+                return;
+            }
+        }
 
         private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
