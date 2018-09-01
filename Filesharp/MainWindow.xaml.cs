@@ -2,6 +2,8 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Filesharp
 {
@@ -88,7 +90,7 @@ namespace Filesharp
                 return;
             }
         }
-        public void startSort(string sourceDirectory, string destDirectory, string intensity)
+        public void startSort(string sourceDirectory, string destDirectory)
         {
             // Look into Dictionary for optimization
             // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
@@ -100,16 +102,31 @@ namespace Filesharp
             string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
             string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
             
+            List<FileInfo> documentsToMove;
+            List<FileInfo> videosToMove;
+            List<FileInfo> audiosToMove;
 
-            Directory.CreateDirectory(sourceDirectory + "Pictures\\");
-            Directory.CreateDirectory(sourceDirectory + "Documents\\");
-            Directory.CreateDirectory(sourceDirectory + "Videos\\");
-            Directory.CreateDirectory(sourceDirectory + "Audio\\");
+            Directory.CreateDirectory(destDirectory + "Pictures\\");
+            Directory.CreateDirectory(destDirectory + "Documents\\");
+            Directory.CreateDirectory(destDirectory + "Videos\\");
+            Directory.CreateDirectory(destDirectory + "Audio\\");
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
 
             try
             {
-                FileInfo[] picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]);
+                List<FileInfo> picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]).ToList();
+                MessageBox.Show(picturesToMove[1].ToString());
+                for (int i = 1; i < pictureFiletypes.Length; i++)
+                {
+                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
+                    foreach (FileInfo file in filesToAdd)
+                    {
+                        picturesToMove.Add(file);
+                    }
+                }
+                string strPicturesToMove = string.Join(",", picturesToMove);
+                MessageBox.Show(strPicturesToMove);
+
             }
             catch (System.IO.DirectoryNotFoundException)
             {
@@ -123,21 +140,6 @@ namespace Filesharp
 
                 FileInfo[] file = sourceDir.GetFiles("*" + filetype);
 
-            }
-
-            try
-            {
-                foreach (FileInfo fileToMove in filesToMove)
-                {
-                    File.Move(sourceDirectory + fileToMove.ToString(), filetypeDirectory + "\\" + fileToMove.ToString());
-
-                    filesSorted++;
-                }
-            }
-            catch (System.IO.DirectoryNotFoundException)
-            {
-                MessageBox.Show("Error: Directory not found");
-                return;
             }
         }
 
@@ -157,9 +159,9 @@ namespace Filesharp
             {
                 startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
             }
-            else
+            else if (operationToExecute == sort)
             {
-                // sort()
+                startSort(textbox1.Text, textbox2.Text);
             }
         }
 
@@ -171,18 +173,17 @@ namespace Filesharp
         {
             if (comboBox1.SelectedIndex == move)
             {
+                hideControl(textbox4);
+
                 textbox1.Text = "Source directory (e.g., C:\\1\\)";
                 textbox2.Text = "Destination directory (e.g., C:\\2\\";
                 textbox3.Text = "Filetype to move (e.g., .png)";
-
-                hideControl(textbox4);
             } else if (comboBox1.SelectedIndex == delete)
             {
-                textbox1.Text = "Directory to delete files from (e.g., C:\\1\\)";
-                textbox2.Text = "Filetype to delete (e.g., .png)";
-
                 hideControl(textbox3);
                 hideControl(textbox4);
+                textbox1.Text = "Directory to delete files from (e.g., C:\\1\\)";
+                textbox2.Text = "Filetype to delete (e.g., .png)";
             } else if (comboBox1.SelectedIndex == createFiles)
             {
                 showControl(textbox3);
@@ -192,6 +193,13 @@ namespace Filesharp
                 textbox2.Text = "Filetype to create (e.g., .png)";
                 textbox3.Text = "Number of files to create (must be integer)";
                 textbox4.Text = "Size to make files (in MB, must be integer)";
+            } else if (comboBox1.SelectedIndex == sort)
+            {
+                hideControl(textbox3);
+                hideControl(textbox4);
+
+                textbox1.Text = "Directory containing unsorted files (e.g., C:\\1\\)";
+                textbox2.Text = "Directory to place sorted files (e.g., C:\\2\\)";
             }
         }
     }

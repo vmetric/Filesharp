@@ -31,7 +31,7 @@
             <ComboBoxItem Content="Move"/>
             <ComboBoxItem Content="Delete"/>
             <ComboBoxItem Content="File Creation"/>
-            <ComboBoxItem Content="Sort" IsEnabled="False"/>
+            <ComboBoxItem Content="Sort"/>
         </ComboBox>
     </Grid>
 </Window>
