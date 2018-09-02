@@ -90,9 +90,9 @@ namespace Filesharp
                 }
                 MessageBox.Show($"Successfully made {filesMade} files");
             }
-            catch (Exception)
+            catch (DirectoryNotFoundException)
             {
-                MessageBox.Show("Error!");
+                MessageBox.Show("Error: Directory not found");
                 return;
             }
         }
@@ -104,12 +104,17 @@ namespace Filesharp
             // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
             // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
 
+            // Ints that will be used to track progress
             int filesSorted = 0;
             int filesToSort = 0;
+
+            // Create filetype arrays for each category
             string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
             string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
             string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
             string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
+
+            // Directory declaration and creation
             string picDir = destDirectory + "Pictures\\";
             string docDir = destDirectory + "Documents\\";
             string vidDir = destDirectory + "Videos\\";
@@ -206,6 +211,8 @@ namespace Filesharp
             }
         }
 
+
+
         // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
@@ -226,6 +233,10 @@ namespace Filesharp
             else if (operationToExecute == sort)
             {
                 startSort(textbox1.Text, textbox2.Text);
+            }
+            else
+            {
+                MessageBox.Show("Error: In button_Execute_Click, operationToExecute does not equal any potential operations");
             }
         }
 
@@ -262,6 +273,10 @@ namespace Filesharp
 
                 textbox1.Text = "Directory containing unsorted files (e.g., C:\\1\\)";
                 textbox2.Text = "Directory to place sorted files (e.g., C:\\2\\)";
+            }
+            else
+            {
+                MessageBox.Show("Error: In cb1_dropDownClosed, comboBox1.SelectedIndex does not equal any potential operations");
             }
         }
     }
