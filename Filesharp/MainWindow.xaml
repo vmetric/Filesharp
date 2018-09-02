@@ -27,7 +27,7 @@
         <TextBox x:Name="textbox4" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="23" Margin="10,0,0,0" Grid.Row="6" TextWrapping="Wrap" Text="4" VerticalAlignment="Top" Width="347"/>
         <Button x:Name="button_Execute" Content="Execute" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="1" Height="26" Margin="0,16,0,0" Grid.RowSpan="2" Click="button_Execute_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,8,0,0" TextWrapping="Wrap" Text="Select the operation you'd like to execute:" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="222"/>
-        <ComboBox x:Name="comboBox1" Grid.Column="2" HorizontalAlignment="Left" Margin="12.333,0,0,0" VerticalAlignment="Top" Width="120" Height="25" SelectionChanged="comboBox1SelChanged" DropDownClosed="cb1_dropDownClosed">
+        <ComboBox x:Name="comboBox1" Grid.Column="2" HorizontalAlignment="Left" Margin="12.333,0,0,0" VerticalAlignment="Top" Width="120" Height="25" DropDownClosed="cb1_dropDownClosed">
             <ComboBoxItem Content="Move"/>
             <ComboBoxItem Content="Delete"/>
             <ComboBoxItem Content="File Creation"/>

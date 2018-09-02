@@ -97,17 +97,19 @@ namespace Filesharp
             // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
 
             int filesSorted = 0;
+            int filesToSort = 0;
             string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
             string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
             string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
             string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
-            
-
-
-            Directory.CreateDirectory(destDirectory + "Pictures\\");
-            Directory.CreateDirectory(destDirectory + "Documents\\");
-            Directory.CreateDirectory(destDirectory + "Videos\\");
-            Directory.CreateDirectory(destDirectory + "Audio\\");
+            string picDir = destDirectory + "Pictures\\";
+            string docDir = destDirectory + "Documents\\";
+            string vidDir = destDirectory + "Videos\\";
+            string audDir = destDirectory + "Audio\\";
+            Directory.CreateDirectory(picDir);
+            Directory.CreateDirectory(docDir);
+            Directory.CreateDirectory(vidDir);
+            Directory.CreateDirectory(audDir);
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
 
             try
@@ -120,49 +122,84 @@ namespace Filesharp
                     foreach (FileInfo file in filesToAdd)
                     {
                         picturesToMove.Add(file);
+                        filesToSort++;
                     }
                 }
 
                 // Gather documents to move
-                List<FileInfo> documentsToMove = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
+                List<FileInfo> documentsToSort = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
                 for (int i = 1; i < documentFiletypes.Length; i++)
                 {
                     FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
                     foreach (FileInfo file in filesToAdd)
                     {
-                        documentsToMove.Add(file);
+                        documentsToSort.Add(file);
+                        filesToSort++;
                     }
                 }
 
                 // Gather videos to move
-                List<FileInfo> videosToMove = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
+                List<FileInfo> videosToSort = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
                 for (int i = 1; i < videoFiletypes.Length; i++)
                 {
                     FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
                     foreach (FileInfo file in filesToAdd)
                     {
-                        videosToMove.Add(file);
+                        videosToSort.Add(file);
+                        filesToSort++;
                     }
                 }
                 // Gather audio files to move
-                List<FileInfo> audioToMove = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
+                List<FileInfo> audioToSort = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
                 for (int i = 1; i < audioFiletypes.Length; i++)
                 {
                     FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
                     foreach (FileInfo file in filesToAdd)
                     {
-                        audioToMove.Add(file);
+                        audioToSort.Add(file);
+                        filesToSort++;
                     }
                 }
+                // Finish gathering file list: begin actual sorting
 
+                // Sort pictures
+                foreach (FileInfo picToSort in picturesToMove)
+                {
+                    File.Move(sourceDir + picToSort.ToString(), picDir + picToSort.ToString());
+                    filesSorted++;
+                }
+                
+                // Sort documents
+                foreach (FileInfo docToSort in documentsToSort)
+                {
+                    File.Move(sourceDir + docToSort.ToString(), docDir + docToSort.ToString());
+                    filesSorted++;
+                }
+
+                // Sort videos
+                foreach (FileInfo vidToSort in videosToSort)
+                {
+                    File.Move(sourceDir + vidToSort.ToString(), vidDir + vidToSort.ToString());
+                    filesSorted++;
+                }
+
+                // Sort audio
+                foreach (FileInfo audToSort in audioToSort)
+                {
+                    File.Move(sourceDir + audToSort.ToString(), audDir + audToSort.ToString());
+                    filesSorted++;
+                }
+
+                MessageBox.Show("Successfully sorted " + filesSorted.ToString() + " files!");
             }
             catch (System.IO.DirectoryNotFoundException)
             {
                 MessageBox.Show("Error: Directory not found");
                 return;
             }
-        }
 
+
+        }
         private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
             int operationToExecute = comboBox1.SelectedIndex;
@@ -184,11 +221,6 @@ namespace Filesharp
                 startSort(textbox1.Text, textbox2.Text);
             }
         }
-
-        private void comboBox1SelChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-
         private void cb1_dropDownClosed(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex == move)
