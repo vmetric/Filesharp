@@ -102,9 +102,7 @@ namespace Filesharp
             string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
             string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
             
-            List<FileInfo> documentsToMove;
-            List<FileInfo> videosToMove;
-            List<FileInfo> audiosToMove;
+
 
             Directory.CreateDirectory(destDirectory + "Pictures\\");
             Directory.CreateDirectory(destDirectory + "Documents\\");
@@ -114,8 +112,8 @@ namespace Filesharp
 
             try
             {
+                // Gather pictures to move
                 List<FileInfo> picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]).ToList();
-                MessageBox.Show(picturesToMove[1].ToString());
                 for (int i = 1; i < pictureFiletypes.Length; i++)
                 {
                     FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
@@ -124,22 +122,44 @@ namespace Filesharp
                         picturesToMove.Add(file);
                     }
                 }
-                string strPicturesToMove = string.Join(",", picturesToMove);
-                MessageBox.Show(strPicturesToMove);
+
+                // Gather documents to move
+                List<FileInfo> documentsToMove = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
+                for (int i = 1; i < documentFiletypes.Length; i++)
+                {
+                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
+                    foreach (FileInfo file in filesToAdd)
+                    {
+                        documentsToMove.Add(file);
+                    }
+                }
+
+                // Gather videos to move
+                List<FileInfo> videosToMove = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
+                for (int i = 1; i < videoFiletypes.Length; i++)
+                {
+                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
+                    foreach (FileInfo file in filesToAdd)
+                    {
+                        videosToMove.Add(file);
+                    }
+                }
+                // Gather audio files to move
+                List<FileInfo> audioToMove = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
+                for (int i = 1; i < audioFiletypes.Length; i++)
+                {
+                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
+                    foreach (FileInfo file in filesToAdd)
+                    {
+                        audioToMove.Add(file);
+                    }
+                }
 
             }
             catch (System.IO.DirectoryNotFoundException)
             {
                 MessageBox.Show("Error: Directory not found");
                 return;
-            }
-
-            foreach (string filetype in pictureFiletypes)
-            {
-                
-
-                FileInfo[] file = sourceDir.GetFiles("*" + filetype);
-
             }
         }
 
