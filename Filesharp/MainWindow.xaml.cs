@@ -18,18 +18,22 @@ namespace Filesharp
         const int createFiles = 2;
         const int sort = 3;
 
+        // Hides a given control.
         public void hideControl(Control control)
         {
             control.Visibility = Visibility.Hidden;
         }
+
+        // Shows a given control.
         public void showControl(Control control)
         {
             control.Visibility = Visibility.Visible;
         }
+
+        // Moves files of a given filetype from a given source directory to a given destination directory.
         public void startMove(string sourceDirectory, string destDirectory, string filetype)
         {
             int filesMoved = 0;
-
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
             FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
 
@@ -38,17 +42,18 @@ namespace Filesharp
                 foreach (FileInfo fileToMove in filesToMove)
                 {
                     File.Move(sourceDirectory + fileToMove.ToString(), destDirectory + fileToMove.ToString());
-
                     filesMoved++;
                 }
             }
-            catch (System.IO.DirectoryNotFoundException)
+            catch (DirectoryNotFoundException)
             {
                 MessageBox.Show("Error: Directory not found");
                 return;
             }
-            MessageBox.Show("Successfully moved " + filesMoved.ToString() + " files");
+            MessageBox.Show($"Successfully moved {filesMoved} files");
         }
+
+        // Deletes files of a given filetype from a given directory.
         public void startDelete(string sourceDirectory, string filetype)
         {
             int filesDeleted = 0;
@@ -60,17 +65,18 @@ namespace Filesharp
                 foreach (FileInfo fileToDelete in filesToDelete)
                 {
                     File.Delete(sourceDirectory + fileToDelete.ToString());
-
                     filesDeleted++;
                 }
             }
-            catch (System.IO.DirectoryNotFoundException)
+            catch (DirectoryNotFoundException)
             {
                 MessageBox.Show("Error: Directory not found");
                 return;
             }
-            MessageBox.Show("Successfully deleted " + filesDeleted.ToString() + " files");
+            MessageBox.Show($"Successfully deleted {filesDeleted} files");
         }
+
+        // Creates a given number of files of a given size and filetype in a given directory.
         public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
         {
             try
@@ -79,10 +85,10 @@ namespace Filesharp
                 int filesMade = 0;
                 for (int i = 0; i < Int32.Parse(numOfFiles); i++)
                 {
-                    System.IO.File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
+                    File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
                     filesMade++;
                 }
-                MessageBox.Show("Successfully made " + filesMade.ToString() + " files");
+                MessageBox.Show($"Successfully made {filesMade} files");
             }
             catch (Exception)
             {
@@ -90,6 +96,8 @@ namespace Filesharp
                 return;
             }
         }
+
+        // Automagically sorts pictures, documents, videos, and audio from a given source directory into a given destination directory.
         public void startSort(string sourceDirectory, string destDirectory)
         {
             // Look into Dictionary for optimization
@@ -160,7 +168,7 @@ namespace Filesharp
                         filesToSort++;
                     }
                 }
-                // Finish gathering file list: begin actual sorting
+                // Finish gathering file list(s): begin actual sorting
 
                 // Sort pictures
                 foreach (FileInfo picToSort in picturesToMove)
@@ -189,17 +197,16 @@ namespace Filesharp
                     File.Move(sourceDir + audToSort.ToString(), audDir + audToSort.ToString());
                     filesSorted++;
                 }
-
-                MessageBox.Show("Successfully sorted " + filesSorted.ToString() + " files!");
+                MessageBox.Show($"Successfully sorted {filesSorted} files!");
             }
-            catch (System.IO.DirectoryNotFoundException)
+            catch (DirectoryNotFoundException)
             {
                 MessageBox.Show("Error: Directory not found");
                 return;
             }
-
-
         }
+
+        // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)
         {
             int operationToExecute = comboBox1.SelectedIndex;
@@ -221,6 +228,8 @@ namespace Filesharp
                 startSort(textbox1.Text, textbox2.Text);
             }
         }
+
+        // Whenever the comboBox dropdown is closed, adjusted each textbox's text and visibility accordingly.
         private void cb1_dropDownClosed(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex == move)
@@ -234,6 +243,7 @@ namespace Filesharp
             {
                 hideControl(textbox3);
                 hideControl(textbox4);
+
                 textbox1.Text = "Directory to delete files from (e.g., C:\\1\\)";
                 textbox2.Text = "Filetype to delete (e.g., .png)";
             } else if (comboBox1.SelectedIndex == createFiles)
