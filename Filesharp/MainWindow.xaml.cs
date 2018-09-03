@@ -63,7 +63,7 @@ namespace Filesharp
                     //opMove.UpdateProgress(filesMoved, filesToMove.Length);
                 }
                 //opMove.textblock1.Text = "Done!";
-                MessageBox.Show($"Successfully moved {filesMoved} files");
+                //MessageBox.Show($"Successfully moved {filesMoved} files");
                 //opMove.Hide();
             }
             catch (DirectoryNotFoundException)
@@ -74,7 +74,6 @@ namespace Filesharp
 
         }
  
-
         // Deletes files of a given filetype from a given directory.
         public void startDelete(string sourceDirectory, string filetype)
         {
@@ -101,7 +100,6 @@ namespace Filesharp
                 MessageBox.Show("Error: Directory not found");
                 return;
             }
-
         }
 
         // Creates a given number of files of a given size and filetype in a given directory.
