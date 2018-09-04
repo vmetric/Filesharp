@@ -22,10 +22,11 @@ namespace Filesharp
         const int sort = 3;
 
         // Operation is running windows declaration
-        Operation_is_running opMove = new Operation_is_running();
+        
         Operation_is_running opDel = new Operation_is_running();
         Operation_is_running opCreate = new Operation_is_running();
-        Operation_is_running opSort = new Operation_is_running();        
+        Operation_is_running opSort = new Operation_is_running();
+        Operation_is_running opMove = new Operation_is_running();
 
         // idk what this does exactly but it's important
         public MainWindow()
@@ -53,25 +54,29 @@ namespace Filesharp
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
             FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
             MessageBox.Show($"ready to move {filesToMove.Length} files");
-           
-            try
-            {
-                foreach (FileInfo fileToMove in filesToMove)
-                {
-                    File.Move(sourceDirectory + fileToMove.ToString(), destDirectory + fileToMove.ToString());
-                    filesMoved++;
-                    //opMove.UpdateProgress(filesMoved, filesToMove.Length);
-                }
-                //opMove.textblock1.Text = "Done!";
-                //MessageBox.Show($"Successfully moved {filesMoved} files");
-                //opMove.Hide();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                MessageBox.Show("Error: Directory not found");
-                return;
-            }
+            opMove.Show();
 
+            Thread threadMove = new Thread(() =>
+            {
+                try
+                {
+                    foreach (FileInfo fileToMove in filesToMove)
+                    {
+                        File.Move(sourceDirectory + fileToMove.ToString(), destDirectory + fileToMove.ToString());
+                        filesMoved++;
+                        opMove.UpdateProgress(filesMoved, filesToMove.Length);
+                    }
+                    opMove.textblock1.Text = "Done!";
+                    MessageBox.Show($"Successfully moved {filesMoved} files");
+                    opMove.Hide();
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show("Error: Directory not found");
+                    return;
+                }
+            });
+            threadMove.Start();
         }
  
         // Deletes files of a given filetype from a given directory.
@@ -259,7 +264,7 @@ namespace Filesharp
 
             if (operationToExecute == move)
             {
-                Task.Run(() => startMove(textbox1.Text, textbox2.Text, textbox3.Text));
+                opMove.Dispatcher.BeginInvoke(new Action(() => startMove(textbox1.Text, textbox2.Text, textbox3.Text)));
             }
             else if (operationToExecute == delete)
             {
