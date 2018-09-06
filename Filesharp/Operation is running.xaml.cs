@@ -34,10 +34,29 @@ namespace Filesharp
             this.textblock1.Text = textblock1Text;
             this.Show();
         }
+
+        public void Minimize()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                this.Hide();
+            });
+        }
+
+        public void UpdateText(string newText)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                textblock1.Text = newText;
+            });
+        }
         
         public void UpdateProgress(int done, int toBeDone)
         {
-            textblock_Progress.Text = $"{ Math.Round(Convert.ToDouble(done) / Convert.ToDouble(toBeDone) * 100, 2)} percent complete";
+            this.Dispatcher.Invoke(() =>
+            {
+                textblock_Progress.Text = $"{ Math.Round(Convert.ToDouble(done) / Convert.ToDouble(toBeDone) * 100, 2)} percent complete";
+            });
         }
         /*
         dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);

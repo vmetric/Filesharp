@@ -22,7 +22,6 @@ namespace Filesharp
         const int sort = 3;
 
         // Operation is running windows declaration
-        
         Operation_is_running opDel = new Operation_is_running();
         Operation_is_running opCreate = new Operation_is_running();
         Operation_is_running opSort = new Operation_is_running();
@@ -49,12 +48,11 @@ namespace Filesharp
         // Moves files of a given filetype from a given source directory to a given destination directory.
         public void startMove(string sourceDirectory, string destDirectory, string filetype)
         {
-            //opMove.Open("Move", $"Moving all {filetype} files from {sourceDirectory} to {destDirectory}, please wait");
+            opMove.Open("Move", $"Moving all {filetype} files from {sourceDirectory} to {destDirectory}, please wait");
             int filesMoved = 0;
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
             FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
             MessageBox.Show($"ready to move {filesToMove.Length} files");
-            opMove.Show();
 
             Thread threadMove = new Thread(() =>
             {
@@ -66,9 +64,9 @@ namespace Filesharp
                         filesMoved++;
                         opMove.UpdateProgress(filesMoved, filesToMove.Length);
                     }
-                    opMove.textblock1.Text = "Done!";
+                    opMove.UpdateText("Done!");
                     MessageBox.Show($"Successfully moved {filesMoved} files");
-                    opMove.Hide();
+                    opMove.Minimize();
                 }
                 catch (DirectoryNotFoundException)
                 {
