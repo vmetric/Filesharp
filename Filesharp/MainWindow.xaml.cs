@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,8 +11,16 @@ namespace Filesharp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     /// Changes made since last commit to main:
     /// Implemented threading and progress indication for Move.
+    /// 
+    /// (internal) TODO:
+    /// Add actual number counts to progress indication
+    /// Utilize progress bar
+    /// 
+    /// (internal) ISSUES:
+    /// Currently, can only run one operation type at a time. I.e., cannot have two moves going on at once. You can have multiple operations of different types running, though.
     public partial class MainWindow : Window
     {
         // Operations index
@@ -24,10 +30,10 @@ namespace Filesharp
         const int sort = 3;
 
         // Operation is running windows declaration
+        Operation_is_running opMove = new Operation_is_running();
         Operation_is_running opDel = new Operation_is_running();
         Operation_is_running opCreate = new Operation_is_running();
         Operation_is_running opSort = new Operation_is_running();
-        Operation_is_running opMove = new Operation_is_running();
 
         // idk what this does exactly but it's important
         public MainWindow()
@@ -51,13 +57,12 @@ namespace Filesharp
         public void startMove(string sourceDirectory, string destDirectory, string filetype)
         {
             opMove.Open("Move", $"Moving all {filetype} files from {sourceDirectory} to {destDirectory}, please wait");
-            int filesMoved = 0;
-            DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
-            FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
-            MessageBox.Show($"ready to move {filesToMove.Length} files");
-
             Thread threadMove = new Thread(() =>
             {
+                int filesMoved = 0;
+                DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+                FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
+                MessageBox.Show($"ready to move {filesToMove.Length} files");
                 try
                 {
                     foreach (FileInfo fileToMove in filesToMove)
@@ -82,57 +87,62 @@ namespace Filesharp
         // Deletes files of a given filetype from a given directory.
         public void startDelete(string sourceDirectory, string filetype)
         {
-            int filesDeleted = 0;
-            DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
-            FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
+            opDel.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
 
-            Thread threadDelete(() = >
+            Thread threadDelete = new Thread(() =>
                 {
+                    int filesDeleted = 0;
+                    DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+                    FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
+                    try
+                    {
+                        foreach (FileInfo fileToDelete in filesToDelete)
+                        {
+                            File.Delete(sourceDirectory + fileToDelete.ToString());
+                            filesDeleted++;
+                            opDel.UpdateProgress(filesDeleted, filesToDelete.Length);
+                        }
+                        opDel.UpdateText("Done!");
+                        MessageBox.Show($"Successfully deleted {filesDeleted} files");
+                        opDel.Minimize();
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        MessageBox.Show("Error: Directory not found");
+                        return;
+                    }
+                });
+            threadDelete.Start();
+        }
+
+        // Creates a given number of files of a given size and filetype in a given directory.
+        public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
+        {
+            opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait");
+            Thread threadCreateFiles = new Thread(() =>
+            {
+                int sizeInBytes = Int32.Parse(sizeInMB) * 1000000;
+                int filesMade = 0;
                 try
                 {
-                    opDel.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
-                    foreach (FileInfo fileToDelete in filesToDelete)
+
+                    for (int i = 0; i < Int32.Parse(numOfFiles); i++)
                     {
-                        File.Delete(sourceDirectory + fileToDelete.ToString());
-                        filesDeleted++;
-                        opDel.UpdateProgress(filesDeleted, filesToDelete.Length);
+                        File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
+                        filesMade++;
+                        opCreate.UpdateProgress(filesMade, Int32.Parse(numOfFiles));
                     }
-                    opDel.UpdateText("Done!");
-                    MessageBox.Show($"Successfully deleted {filesDeleted} files");
-                    opDel.Minimize();
+                    opCreate.UpdateText("Done!");
+                    MessageBox.Show($"Successfully made {filesMade} {sizeInMB}MB {filetype} files in {directory}");
+                    opCreate.Minimize();
                 }
                 catch (DirectoryNotFoundException)
                 {
                     MessageBox.Show("Error: Directory not found");
                     return;
                 }
-                )};
-        }
-
-        // Creates a given number of files of a given size and filetype in a given directory.
-        public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
-        {
-            try
-            {
-                opCreate.Title = "Create";
-                opCreate.textblock1.Text = $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait";
-                opCreate.Show();
-                int sizeInBytes = Int32.Parse(sizeInMB) * 1000000;
-                int filesMade = 0;
-                for (int i = 0; i < Int32.Parse(numOfFiles); i++)
-                {
-                    File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
-                    filesMade++;
-                }
-                opCreate.textblock1.Text = "Done!";
-                MessageBox.Show($"Successfully made {filesMade} {sizeInMB}MB {filetype} files in {directory}");
-                opCreate.Close();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                MessageBox.Show("Error: Directory not found");
-                return;
-            }
+            });
+            threadCreateFiles.Start();
         }
 
         // Automagically sorts pictures, documents, videos, and audio from a given source directory into a given destination directory.
@@ -248,7 +258,7 @@ namespace Filesharp
                 }
                 opSort.textblock1.Text = "Done!";
                 MessageBox.Show($"Successfully sorted {filesSorted} files!");
-                opSort.Close();
+                opSort.Minimize();
             }
             catch (DirectoryNotFoundException)
             {
@@ -270,15 +280,15 @@ namespace Filesharp
             }
             else if (operationToExecute == delete)
             {
-                startDelete(textbox1.Text, textbox2.Text);
+                opDel.Dispatcher.BeginInvoke(new Action(() => startDelete(textbox1.Text, textbox2.Text)));
             }
             else if (operationToExecute == createFiles)
             {
-                startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
+                opCreate.Dispatcher.BeginInvoke(new Action(() => startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text)));
             }
             else if (operationToExecute == sort)
             {
-                startSort(textbox1.Text, textbox2.Text);
+                opSort.Dispatcher.BeginInvoke(new Action(() => startSort(textbox1.Text, textbox2.Text)));
             }
             else
             {
@@ -292,7 +302,7 @@ namespace Filesharp
             if (comboBox1.SelectedIndex == move)
             {
                 hideControl(textbox4);
-
+                showControl(textbox3);
                 textbox1.Text = "Source directory (e.g., C:\\1\\)";
                 textbox2.Text = "Destination directory (e.g., C:\\2\\";
                 textbox3.Text = "Filetype to move (e.g., .png)";
