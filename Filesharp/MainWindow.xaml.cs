@@ -21,6 +21,7 @@ namespace Filesharp
     /// 
     /// (internal) ISSUES:
     /// Currently, can only run one operation type at a time. I.e., cannot have two moves going on at once. You can have multiple operations of different types running, though.
+    /// Sort operation progress indication turns to "(infinity) time remaining"
     public partial class MainWindow : Window
     {
         // Operations index
@@ -88,7 +89,6 @@ namespace Filesharp
         public void startDelete(string sourceDirectory, string filetype)
         {
             opDel.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
-
             Thread threadDelete = new Thread(() =>
                 {
                     int filesDeleted = 0;
@@ -151,120 +151,124 @@ namespace Filesharp
             // Look into Dictionary for optimization
             // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
             // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
-            opSort.Title = "Sort";
-            opSort.textblock1.Text = "Sorting files, please wait";
-            opSort.Show();
 
+            opSort.Open("Sort", "Sorting files, please wait");
 
-            // Ints that will be used to track progress
-            int filesSorted = 0;
-            int filesToSort = 0;
-
-            // Create filetype arrays for each category
-            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
-            string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
-            string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
-            string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
-
-            // Directory declaration and creation
-            string picDir = destDirectory + "Pictures\\";
-            string docDir = destDirectory + "Documents\\";
-            string vidDir = destDirectory + "Videos\\";
-            string audDir = destDirectory + "Audio\\";
-            Directory.CreateDirectory(picDir);
-            Directory.CreateDirectory(docDir);
-            Directory.CreateDirectory(vidDir);
-            Directory.CreateDirectory(audDir);
-            DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
-
-            try
+            Thread threadSort = new Thread(() =>
             {
+                // Ints that will be used to track progress
+                int filesSorted = 0;
+                int filesToSort = 0;
 
+                // Create filetype arrays for each category
+                string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
+                string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
+                string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
+                string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
 
-                // Gather pictures to move
-                List<FileInfo> picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]).ToList();
-                for (int i = 1; i < pictureFiletypes.Length; i++)
+                // Directory declaration and creation
+                string picDir = destDirectory + "Pictures\\";
+                string docDir = destDirectory + "Documents\\";
+                string vidDir = destDirectory + "Videos\\";
+                string audDir = destDirectory + "Audio\\";
+                Directory.CreateDirectory(picDir);
+                Directory.CreateDirectory(docDir);
+                Directory.CreateDirectory(vidDir);
+                Directory.CreateDirectory(audDir);
+                DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+
+                try
                 {
-                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
-                    foreach (FileInfo file in filesToAdd)
+                    // Gather pictures to move
+                    List<FileInfo> picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]).ToList();
+                    for (int i = 1; i < pictureFiletypes.Length; i++)
                     {
-                        picturesToMove.Add(file);
-                        filesToSort++;
+                        FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
+                        foreach (FileInfo file in filesToAdd)
+                        {
+                            picturesToMove.Add(file);
+                            filesToSort++;
+                        }
                     }
-                }
 
-                // Gather documents to move
-                List<FileInfo> documentsToSort = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
-                for (int i = 1; i < documentFiletypes.Length; i++)
-                {
-                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
-                    foreach (FileInfo file in filesToAdd)
+                    // Gather documents to move
+                    List<FileInfo> documentsToSort = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
+                    for (int i = 1; i < documentFiletypes.Length; i++)
                     {
-                        documentsToSort.Add(file);
-                        filesToSort++;
+                        FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
+                        foreach (FileInfo file in filesToAdd)
+                        {
+                            documentsToSort.Add(file);
+                            filesToSort++;
+                        }
                     }
-                }
 
-                // Gather videos to move
-                List<FileInfo> videosToSort = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
-                for (int i = 1; i < videoFiletypes.Length; i++)
-                {
-                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
-                    foreach (FileInfo file in filesToAdd)
+                    // Gather videos to move
+                    List<FileInfo> videosToSort = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
+                    for (int i = 1; i < videoFiletypes.Length; i++)
                     {
-                        videosToSort.Add(file);
-                        filesToSort++;
+                        FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
+                        foreach (FileInfo file in filesToAdd)
+                        {
+                            videosToSort.Add(file);
+                            filesToSort++;
+                        }
                     }
-                }
-                // Gather audio files to move
-                List<FileInfo> audioToSort = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
-                for (int i = 1; i < audioFiletypes.Length; i++)
-                {
-                    FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
-                    foreach (FileInfo file in filesToAdd)
+                    // Gather audio files to move
+                    List<FileInfo> audioToSort = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
+                    for (int i = 1; i < audioFiletypes.Length; i++)
                     {
-                        audioToSort.Add(file);
-                        filesToSort++;
+                        FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
+                        foreach (FileInfo file in filesToAdd)
+                        {
+                            audioToSort.Add(file);
+                            filesToSort++;
+                        }
                     }
-                }
-                // Finish gathering file list(s): begin actual sorting
+                    // Finish gathering file list(s): begin actual sorting
 
-                // Sort pictures
-                foreach (FileInfo picToSort in picturesToMove)
-                {
-                    File.Move(sourceDir + picToSort.ToString(), picDir + picToSort.ToString());
-                    filesSorted++;
-                }
-                
-                // Sort documents
-                foreach (FileInfo docToSort in documentsToSort)
-                {
-                    File.Move(sourceDir + docToSort.ToString(), docDir + docToSort.ToString());
-                    filesSorted++;
-                }
+                    // Sort pictures
+                    foreach (FileInfo picToSort in picturesToMove)
+                    {
+                        File.Move(sourceDir + picToSort.ToString(), picDir + picToSort.ToString());
+                        filesSorted++;
+                        opSort.UpdateProgress(filesSorted, filesToSort);
+                    }
 
-                // Sort videos
-                foreach (FileInfo vidToSort in videosToSort)
-                {
-                    File.Move(sourceDir + vidToSort.ToString(), vidDir + vidToSort.ToString());
-                    filesSorted++;
-                }
+                    // Sort documents
+                    foreach (FileInfo docToSort in documentsToSort)
+                    {
+                        File.Move(sourceDir + docToSort.ToString(), docDir + docToSort.ToString());
+                        filesSorted++;
+                        opSort.UpdateProgress(filesSorted, filesToSort);
+                    }
 
-                // Sort audio
-                foreach (FileInfo audToSort in audioToSort)
-                {
-                    File.Move(sourceDir + audToSort.ToString(), audDir + audToSort.ToString());
-                    filesSorted++;
+                    // Sort videos
+                    foreach (FileInfo vidToSort in videosToSort)
+                    {
+                        File.Move(sourceDir + vidToSort.ToString(), vidDir + vidToSort.ToString());
+                        filesSorted++;
+                        opSort.UpdateProgress(filesSorted, filesToSort);
+                    }
+
+                    // Sort audio
+                    foreach (FileInfo audToSort in audioToSort)
+                    {
+                        File.Move(sourceDir + audToSort.ToString(), audDir + audToSort.ToString());
+                        filesSorted++;
+                        opSort.UpdateProgress(filesSorted, filesToSort);
+                    }
+                    opSort.UpdateText("Done!");
+                    MessageBox.Show($"Successfully sorted {filesSorted} files!");
+                    opSort.Minimize();
                 }
-                opSort.textblock1.Text = "Done!";
-                MessageBox.Show($"Successfully sorted {filesSorted} files!");
-                opSort.Minimize();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                MessageBox.Show("Error: Directory not found");
-                return;
-            }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show("Error: Directory not found");
+                    return;
+                }
+            });
+            threadSort.Start();
         }
 
 
