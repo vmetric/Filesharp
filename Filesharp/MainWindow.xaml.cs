@@ -13,6 +13,8 @@ namespace Filesharp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// Changes made since last commit to main:
+    /// Implemented threading and progress indication for Move.
     public partial class MainWindow : Window
     {
         // Operations index
@@ -76,7 +78,7 @@ namespace Filesharp
             });
             threadMove.Start();
         }
- 
+
         // Deletes files of a given filetype from a given directory.
         public void startDelete(string sourceDirectory, string filetype)
         {
@@ -84,25 +86,27 @@ namespace Filesharp
             DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
             FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
 
-            try
-            {
-                opDel.Title = "Delete";
-                opDel.textblock1.Text = $"Deleting all {filetype} files from {sourceDirectory}, please wait";
-                opDel.Hide();
-                foreach (FileInfo fileToDelete in filesToDelete)
+            Thread threadDelete(() = >
                 {
-                    File.Delete(sourceDirectory + fileToDelete.ToString());
-                    filesDeleted++;
+                try
+                {
+                    opDel.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
+                    foreach (FileInfo fileToDelete in filesToDelete)
+                    {
+                        File.Delete(sourceDirectory + fileToDelete.ToString());
+                        filesDeleted++;
+                        opDel.UpdateProgress(filesDeleted, filesToDelete.Length);
+                    }
+                    opDel.UpdateText("Done!");
+                    MessageBox.Show($"Successfully deleted {filesDeleted} files");
+                    opDel.Minimize();
                 }
-                opDel.textblock1.Text = "Done!";
-                MessageBox.Show($"Successfully deleted {filesDeleted} files");
-                opDel.Close();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                MessageBox.Show("Error: Directory not found");
-                return;
-            }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show("Error: Directory not found");
+                    return;
+                }
+                )};
         }
 
         // Creates a given number of files of a given size and filetype in a given directory.
