@@ -55,6 +55,7 @@ namespace Filesharp
         {
             this.Dispatcher.Invoke(() =>
             {
+                MessageBox.Show($"Current math: dividing {done} by {toBeDone}");
                 textblock_Progress.Text = $"{ Math.Round(Convert.ToDouble(done) / Convert.ToDouble(toBeDone) * 100, 2)} percent complete";
             });
         }

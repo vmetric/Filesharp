@@ -13,15 +13,18 @@ namespace Filesharp
     /// </summary>
     /// 
     /// Changes made since last commit to main:
-    /// Implemented threading and progress indication for Move.
+    /// Implemented threading and progress indication for Move, Delete, Create Files, and Sort.
     /// 
     /// (internal) TODO:
-    /// Add actual number counts to progress indication
-    /// Utilize progress bar
+    /// 1) Add actual number counts to progress indication
+    /// 2) Utilize progress bar
     /// 
     /// (internal) ISSUES:
-    /// Currently, can only run one operation type at a time. I.e., cannot have two moves going on at once. You can have multiple operations of different types running, though.
-    /// Sort operation progress indication turns to "(infinity) time remaining"
+    /// 1) Currently, can only run one operation type at a time. I.e., cannot have two moves going on at once. You can have multiple operations of different types running, though.
+    /// // POSSIBLE FIX: If (for example) the opMove declaration is moved inside the method, and then at the end of the method opMove.Dispatcher.BeginInvoke is used to start the thread?
+    /// // Then, make declarative name and title be based on input (i.e., "opMove.txtFromE:\1\toE:\2\")
+    /// 2) On closing of main window, program is still running in background (other windows being hidden not closed is culprit?)
+
     public partial class MainWindow : Window
     {
         // Operations index
@@ -176,24 +179,26 @@ namespace Filesharp
                 Directory.CreateDirectory(vidDir);
                 Directory.CreateDirectory(audDir);
                 DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
+                List<FileInfo> picturesToSort = new List<FileInfo>();
+                List<FileInfo> documentsToSort = new List<FileInfo>();
+                List<FileInfo> videosToSort = new List<FileInfo>();
+                List<FileInfo> audioToSort = new List<FileInfo>();
 
                 try
                 {
                     // Gather pictures to move
-                    List<FileInfo> picturesToMove = sourceDir.GetFiles("*" + pictureFiletypes[0]).ToList();
-                    for (int i = 1; i < pictureFiletypes.Length; i++)
+                    for (int i = 0; i < pictureFiletypes.Length; i++)
                     {
                         FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
                         foreach (FileInfo file in filesToAdd)
                         {
-                            picturesToMove.Add(file);
+                            picturesToSort.Add(file);
                             filesToSort++;
                         }
                     }
-
+                    
                     // Gather documents to move
-                    List<FileInfo> documentsToSort = sourceDir.GetFiles("*" + documentFiletypes[0]).ToList();
-                    for (int i = 1; i < documentFiletypes.Length; i++)
+                    for (int i = 0; i < documentFiletypes.Length; i++)
                     {
                         FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
                         foreach (FileInfo file in filesToAdd)
@@ -204,8 +209,7 @@ namespace Filesharp
                     }
 
                     // Gather videos to move
-                    List<FileInfo> videosToSort = sourceDir.GetFiles("*" + videoFiletypes[0]).ToList();
-                    for (int i = 1; i < videoFiletypes.Length; i++)
+                    for (int i = 0; i < videoFiletypes.Length; i++)
                     {
                         FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
                         foreach (FileInfo file in filesToAdd)
@@ -215,8 +219,7 @@ namespace Filesharp
                         }
                     }
                     // Gather audio files to move
-                    List<FileInfo> audioToSort = sourceDir.GetFiles("*" + audioFiletypes[0]).ToList();
-                    for (int i = 1; i < audioFiletypes.Length; i++)
+                    for (int i = 0; i < audioFiletypes.Length; i++)
                     {
                         FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
                         foreach (FileInfo file in filesToAdd)
@@ -228,7 +231,7 @@ namespace Filesharp
                     // Finish gathering file list(s): begin actual sorting
 
                     // Sort pictures
-                    foreach (FileInfo picToSort in picturesToMove)
+                    foreach (FileInfo picToSort in picturesToSort)
                     {
                         File.Move(sourceDir + picToSort.ToString(), picDir + picToSort.ToString());
                         filesSorted++;
@@ -307,6 +310,7 @@ namespace Filesharp
             {
                 hideControl(textbox4);
                 showControl(textbox3);
+
                 textbox1.Text = "Source directory (e.g., C:\\1\\)";
                 textbox2.Text = "Destination directory (e.g., C:\\2\\";
                 textbox3.Text = "Filetype to move (e.g., .png)";
