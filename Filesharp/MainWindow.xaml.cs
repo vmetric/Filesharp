@@ -20,10 +20,7 @@ namespace Filesharp
     /// 2) Utilize progress bar
     /// 
     /// (internal) ISSUES:
-    /// 1) Currently, can only run one operation type at a time. I.e., cannot have two moves going on at once. You can have multiple operations of different types running, though.
-    /// // POSSIBLE FIX: If (for example) the opMove declaration is moved inside the method, and then at the end of the method opMove.Dispatcher.BeginInvoke is used to start the thread?
-    /// // Then, make declarative name and title be based on input (i.e., "opMove.txtFromE:\1\toE:\2\")
-    /// 2) On closing of main window, program is still running in background (other windows being hidden not closed is culprit?)
+    /// 1) On closing of main window, program is still running in background
 
     public partial class MainWindow : Window
     {
@@ -33,11 +30,11 @@ namespace Filesharp
         const int createFiles = 2;
         const int sort = 3;
 
-        // Operation is running windows declaration
-        Operation_is_running opMove = new Operation_is_running();
-        Operation_is_running opDel = new Operation_is_running();
-        Operation_is_running opCreate = new Operation_is_running();
-        Operation_is_running opSort = new Operation_is_running();
+        // Ints to keep track of how many of each operation are currently open
+        int moveOpsRunning = 0;
+        int deleteOpsRunning = 0;
+        int createFilesOpsRunning = 0;
+        int sortOpsRunning = 0;
 
         // idk what this does exactly but it's important
         public MainWindow()
@@ -60,6 +57,9 @@ namespace Filesharp
         // Moves files of a given filetype from a given source directory to a given destination directory.
         public void startMove(string sourceDirectory, string destDirectory, string filetype)
         {
+            Operation_is_running opMove = new Operation_is_running();
+            opMove.Name = "opMove" + moveOpsRunning;
+            moveOpsRunning++;
             opMove.Open("Move", $"Moving all {filetype} files from {sourceDirectory} to {destDirectory}, please wait");
             Thread threadMove = new Thread(() =>
             {
@@ -77,7 +77,8 @@ namespace Filesharp
                     }
                     opMove.UpdateText("Done!");
                     MessageBox.Show($"Successfully moved {filesMoved} files");
-                    opMove.Minimize();
+                    moveOpsRunning--;
+                    opMove.Exit();
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -85,13 +86,17 @@ namespace Filesharp
                     return;
                 }
             });
-            threadMove.Start();
+            //opMove.Dispatcher.BeginInvoke(new Action(() => ));
+            opMove.Dispatcher.BeginInvoke(new Action(() => threadMove.Start()));
         }
 
         // Deletes files of a given filetype from a given directory.
         public void startDelete(string sourceDirectory, string filetype)
         {
-            opDel.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
+            Operation_is_running opDelete = new Operation_is_running();
+            opDelete.Name = "opDelete" + deleteOpsRunning;
+            deleteOpsRunning++;
+            opDelete.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait");
             Thread threadDelete = new Thread(() =>
                 {
                     int filesDeleted = 0;
@@ -103,24 +108,28 @@ namespace Filesharp
                         {
                             File.Delete(sourceDirectory + fileToDelete.ToString());
                             filesDeleted++;
-                            opDel.UpdateProgress(filesDeleted, filesToDelete.Length);
+                            opDelete.UpdateProgress(filesDeleted, filesToDelete.Length);
                         }
-                        opDel.UpdateText("Done!");
+                        opDelete.UpdateText("Done!");
                         MessageBox.Show($"Successfully deleted {filesDeleted} files");
-                        opDel.Minimize();
+                        deleteOpsRunning--;
+                        opDelete.Exit();
                     }
                     catch (DirectoryNotFoundException)
                     {
                         MessageBox.Show("Error: Directory not found");
                         return;
-                    }
+                    }                    
                 });
-            threadDelete.Start();
+            opDelete.Dispatcher.BeginInvoke(new Action(() => threadDelete.Start()));
         }
 
         // Creates a given number of files of a given size and filetype in a given directory.
         public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
         {
+            Operation_is_running opCreate = new Operation_is_running();
+            opCreate.Name = "opCreate" + createFilesOpsRunning;
+            createFilesOpsRunning++;
             opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait");
             Thread threadCreateFiles = new Thread(() =>
             {
@@ -137,7 +146,8 @@ namespace Filesharp
                     }
                     opCreate.UpdateText("Done!");
                     MessageBox.Show($"Successfully made {filesMade} {sizeInMB}MB {filetype} files in {directory}");
-                    opCreate.Minimize();
+                    createFilesOpsRunning--;
+                    opCreate.Exit();
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -145,7 +155,8 @@ namespace Filesharp
                     return;
                 }
             });
-            threadCreateFiles.Start();
+            opCreate.Dispatcher.BeginInvoke(new Action(() => threadCreateFiles.Start()));
+
         }
 
         // Automagically sorts pictures, documents, videos, and audio from a given source directory into a given destination directory.
@@ -154,7 +165,8 @@ namespace Filesharp
             // Look into Dictionary for optimization
             // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
             // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
-
+            Operation_is_running opSort = new Operation_is_running();
+            opSort.Name = "opSort" + sortOpsRunning;
             opSort.Open("Sort", "Sorting files, please wait");
 
             Thread threadSort = new Thread(() =>
@@ -263,7 +275,8 @@ namespace Filesharp
                     }
                     opSort.UpdateText("Done!");
                     MessageBox.Show($"Successfully sorted {filesSorted} files!");
-                    opSort.Minimize();
+                    sortOpsRunning--;
+                    opSort.Exit();
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -271,10 +284,9 @@ namespace Filesharp
                     return;
                 }
             });
-            threadSort.Start();
+            opSort.Dispatcher.BeginInvoke(new Action(() => threadSort.Start()));
+            ;
         }
-
-
 
         // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -283,19 +295,19 @@ namespace Filesharp
 
             if (operationToExecute == move)
             {
-                opMove.Dispatcher.BeginInvoke(new Action(() => startMove(textbox1.Text, textbox2.Text, textbox3.Text)));
+                startMove(textbox1.Text, textbox2.Text, textbox3.Text);
             }
             else if (operationToExecute == delete)
             {
-                opDel.Dispatcher.BeginInvoke(new Action(() => startDelete(textbox1.Text, textbox2.Text)));
+                startDelete(textbox1.Text, textbox2.Text);
             }
             else if (operationToExecute == createFiles)
             {
-                opCreate.Dispatcher.BeginInvoke(new Action(() => startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text)));
+                startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
             }
             else if (operationToExecute == sort)
             {
-                opSort.Dispatcher.BeginInvoke(new Action(() => startSort(textbox1.Text, textbox2.Text)));
+                startSort(textbox1.Text, textbox2.Text);
             }
             else
             {
