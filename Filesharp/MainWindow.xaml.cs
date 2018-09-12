@@ -18,9 +18,6 @@ namespace Filesharp
     /// (internal) TODO:
     /// 1) Add actual number counts to progress indication
     /// 2) Utilize progress bar
-    /// 
-    /// (internal) ISSUES:
-    /// 1) On closing of main window, program is still running in background
 
     public partial class MainWindow : Window
     {
