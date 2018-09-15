@@ -33,5 +33,6 @@
             <ComboBoxItem Content="File Creation"/>
             <ComboBoxItem Content="Sort"/>
         </ComboBox>
+        <CheckBox x:Name="checkbox_Recursive" Content="CheckBox" Grid.Column="2" HorizontalAlignment="Left" Margin="41,0,0,0" Grid.Row="2" VerticalAlignment="Top" Click="checkbox_Recursive_Click"/>
     </Grid>
 </Window>

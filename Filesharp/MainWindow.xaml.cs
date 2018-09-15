@@ -27,6 +27,7 @@ namespace Filesharp
         const int delete = 1;
         const int createFiles = 2;
         const int sort = 3;
+        bool isRecursive = false;
 
         // Ints to keep track of how many of each operation are currently open
         int moveOpsRunning = 0;
@@ -175,7 +176,7 @@ namespace Filesharp
             }
             else if (operationToExecute == sort)
             {
-                SortingMethods.startSort(textbox1.Text, textbox2.Text);
+                SortingMethods.startSort(textbox1.Text, textbox2.Text, isRecursive);
             }
             else
             {
@@ -222,6 +223,15 @@ namespace Filesharp
             {
                 MessageBox.Show("Error: In cb1_dropDownClosed, comboBox1.SelectedIndex does not equal any potential operations");
             }
+        }
+
+        private void checkbox_Recursive_Checked(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void checkbox_Recursive_Click(object sender, RoutedEventArgs e)
+        {
+            isRecursive = checkbox_Recursive.IsChecked.HasValue ? checkbox_Recursive.IsChecked.Value : false;
         }
     }
 }
