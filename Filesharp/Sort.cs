@@ -12,8 +12,6 @@ namespace Filesharp
         {
             // Look into Dictionary for optimization
 
-
-
             int sortOpsRunning = 0;
             Operation_is_running opSort = new Operation_is_running();
 
@@ -27,13 +25,15 @@ namespace Filesharp
                     sortDocuments(dirToSortFrom, dirToSortTo);
                     sortVideos(dirToSortFrom, dirToSortTo);
                     sortAudio(dirToSortFrom, dirToSortTo);
-                } catch
+                } catch (Exception exc)
                 {
-                    MessageBox.Show("Error sorting!");
+                    MessageBox.Show($"Error sorting: {exc}");
                     return;
                 }
                 MessageBox.Show("Done sorting!");
                 sortOpsRunning--;
+                opSort.Exit();
+
             });
             opSort.Dispatcher.BeginInvoke((Action)delegate { threadSort.Start(); });
         }       
@@ -157,7 +157,7 @@ namespace Filesharp
             // Sort audio
             foreach (FileInfo audioFile in audioToSort)
             {
-                File.Move(sourceDirectory + audioFile.ToString(), audDir + audToSort.ToString());
+                File.Move(sourceDirectory + audioFile.ToString(), audDir + audioFile.ToString());
                 audSorted++;
             }
         }

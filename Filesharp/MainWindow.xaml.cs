@@ -127,7 +127,7 @@ namespace Filesharp
             Operation_is_running opCreate = new Operation_is_running();
             opCreate.Name = "opCreate" + createFilesOpsRunning;
             createFilesOpsRunning++;
-            opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait", "Creating files", createFilesOpsRunning);
+            opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait", "Creating_files", createFilesOpsRunning);
             Thread threadCreateFiles = new Thread(() =>
             {
                 int sizeInBytes = Int32.Parse(sizeInMB) * 1000000;
