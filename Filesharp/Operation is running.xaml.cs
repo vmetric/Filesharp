@@ -28,10 +28,11 @@ namespace Filesharp
             InitializeComponent();
         }
 
-        public void Open(string title, string textblock1Text)
+        public void Open(string title, string textblock1Text, string op, int opCount)
         {
             this.Title = title;
             this.textblock1.Text = textblock1Text;
+            this.Name = $"{op}{opCount}";
             this.Show();
         }
 
