@@ -11,10 +11,12 @@ namespace Filesharp
         public void startSort(string dirToSortFrom, string dirToSortTo)
         {
             // Look into Dictionary for optimization
-            // https://stackoverflow.com/questions/24917532/can-you-create-variables-in-a-loop-c-sharp
-            // https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=netframework-4.7.2
+
+
+
             int sortOpsRunning = 0;
             Operation_is_running opSort = new Operation_is_running();
+
             opSort.Open("Sort", "Sorting files, please wait", "Sort", sortOpsRunning);
             sortOpsRunning++;
             Thread threadSort = new Thread(() =>

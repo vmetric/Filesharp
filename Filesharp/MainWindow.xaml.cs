@@ -14,9 +14,8 @@ namespace Filesharp
     /// (internal) TODO:
     /// 1) Add actual number counts to progress indication
     /// 2) Utilize progress bar
-    /// 
-    /// NOTE!!!!
-    /// Need to debug recursiveness of sort function.
+    /// 3) Make each operation recursive
+    /// 4) Make recursiveness optional
 
     public partial class MainWindow : Window
     {
