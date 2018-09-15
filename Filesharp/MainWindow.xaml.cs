@@ -33,7 +33,6 @@ namespace Filesharp
         int moveOpsRunning = 0;
         int deleteOpsRunning = 0;
         int createFilesOpsRunning = 0;
-        int sortOpsRunning = 0;
 
         // idk what this does exactly but it's important
         public MainWindow()
@@ -157,10 +156,6 @@ namespace Filesharp
             opCreate.Dispatcher.BeginInvoke(new Action(() => threadCreateFiles.Start()));
 
         }
-
-        // Automagically sorts pictures, documents, videos, and audio from a given source directory into a given destination directory.
-
-        
 
         // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)

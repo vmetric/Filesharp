@@ -34,8 +34,7 @@ namespace Filesharp
                 sortOpsRunning--;
             });
             opSort.Dispatcher.BeginInvoke((Action)delegate { threadSort.Start(); });
-        }
-        
+        }       
         public void sortPictures(string sourceDirectory, string destinationDirectory)
         {
             // Declarations
