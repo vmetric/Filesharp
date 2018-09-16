@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Filesharp
 {
-    public class SortingMethodsClass
+    public class Sort
     {
         int sortOpsRunning = 0;
 
