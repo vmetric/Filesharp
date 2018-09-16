@@ -8,11 +8,12 @@ namespace Filesharp
 {
     public class SortingMethodsClass
     {
+        int sortOpsRunning = 0;
+
         public void startSort(string dirToSortFrom, string dirToSortTo, bool isRecursive)
         {
             // Look into Dictionary for optimization
 
-            int sortOpsRunning = 0;
             Operation_is_running opSort = new Operation_is_running();
             DirectoryInfo sourceDir = new DirectoryInfo(dirToSortFrom);
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
@@ -20,9 +21,13 @@ namespace Filesharp
             if (sortOpsRunning == 0)
             {
                 opSort.Open("Sort", "Sorting files, please wait", "Sort", sortOpsRunning);
-            } else if (!isRecursive)
+            } else if (sortOpsRunning > 0 && !isRecursive)
             {
-                opSort.Open("Sort", "Sorting files, please wait", "Sort", sortOpsRunning);
+                opSort.Open($"Sort from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
+            }
+            else
+            {
+                // do nothing
             }
             sortOpsRunning++;
             
@@ -48,7 +53,6 @@ namespace Filesharp
                     MessageBox.Show($"Error sorting: {exc}");
                     return;
                 }
-                MessageBox.Show("Done sorting!");
                 sortOpsRunning--;
                 opSort.Exit();
             });
