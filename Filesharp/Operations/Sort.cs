@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Collections.Generic;
 
-namespace Filesharp
+namespace Filesharp.Operations
 {
     public class Sort
     {
@@ -20,10 +20,11 @@ namespace Filesharp
 
             if (sortOpsRunning == 0)
             {
-                opSort.Open("Sort", "Sorting files, please wait", "Sort", sortOpsRunning);
-            } else if (sortOpsRunning > 0 && !isRecursive)
+                opSort.Open($"Sorting from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
+            }
+            else if (sortOpsRunning > 0 && !isRecursive)
             {
-                opSort.Open($"Sort from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
+                opSort.Open($"Sorting from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
             }
             else
             {
@@ -38,7 +39,6 @@ namespace Filesharp
                     startSort(dirToSortFrom + dir.ToString() + "\\", dirToSortTo, isRecursive);
                 }
             }
-
 
             Thread threadSort = new Thread(() =>
             {

@@ -69,8 +69,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Move.cs" />
-    <Compile Include="Sort.cs" />
+    <Compile Include="Operations\Create Files.cs" />
+    <Compile Include="Operations\Delete.cs" />
+    <Compile Include="Operations\Move.cs" />
+    <Compile Include="Operations\Sort.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

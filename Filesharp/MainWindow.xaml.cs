@@ -18,8 +18,10 @@ namespace Filesharp
     public partial class MainWindow : Window
     {
         // Declaration of class objects
-        Sort SortingMethods = new Sort();
-        Move MoveMethods = new Move();
+        Operations.Sort SortingMethods = new Operations.Sort();
+        Operations.Move MoveMethods = new Operations.Move();
+        Operations.Delete DeleteMethods = new Operations.Delete();
+        Operations.Create_Files CreateMethods = new Operations.Create_Files();
 
         // Operations index
         const int move = 0;
@@ -27,10 +29,6 @@ namespace Filesharp
         const int createFiles = 2;
         const int sort = 3;
         bool isRecursive = false;
-
-        // Ints to keep track of how many of each operation are currently open
-        int deleteOpsRunning = 0;
-        int createFilesOpsRunning = 0;
 
         // idk what this does exactly but it's important
         public MainWindow()
@@ -48,79 +46,8 @@ namespace Filesharp
         public void showControl(Control control)
         {
             control.Visibility = Visibility.Visible;
-        }
+        } 
 
-        // Moves files of a given filetype from a given source directory to a given destination directory.
- 
-
-        // Deletes files of a given filetype from a given directory.
-        public void startDelete(string sourceDirectory, string filetype)
-        {
-            Operation_is_running opDelete = new Operation_is_running();
-            opDelete.Name = "opDelete" + deleteOpsRunning;
-            deleteOpsRunning++;
-            opDelete.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait", "Delete", deleteOpsRunning);
-            Thread threadDelete = new Thread(() =>
-                {
-                    int filesDeleted = 0;
-                    DirectoryInfo sourceDir = new DirectoryInfo(@sourceDirectory);
-                    FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
-                    try
-                    {
-                        foreach (FileInfo fileToDelete in filesToDelete)
-                        {
-                            File.Delete(sourceDirectory + fileToDelete.ToString());
-                            filesDeleted++;
-                            opDelete.UpdateProgress(filesDeleted, filesToDelete.Length);
-                        }
-                        opDelete.UpdateText("Done!");
-                        MessageBox.Show($"Successfully deleted {filesDeleted} files");
-                        deleteOpsRunning--;
-                        opDelete.Exit();
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        MessageBox.Show("Error: Directory not found");
-                        return;
-                    }                    
-                });
-            opDelete.Dispatcher.BeginInvoke(new Action(() => threadDelete.Start()));
-        }
-
-        // Creates a given number of files of a given size and filetype in a given directory.
-        public void startCreateFiles(string directory, string filetype, string numOfFiles, string sizeInMB)
-        {
-            Operation_is_running opCreate = new Operation_is_running();
-            opCreate.Name = "opCreate" + createFilesOpsRunning;
-            createFilesOpsRunning++;
-            opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait", "Creating_files", createFilesOpsRunning);
-            Thread threadCreateFiles = new Thread(() =>
-            {
-                int sizeInBytes = Int32.Parse(sizeInMB) * 1000000;
-                int filesMade = 0;
-                try
-                {
-
-                    for (int i = 0; i < Int32.Parse(numOfFiles); i++)
-                    {
-                        File.WriteAllBytes(directory + "file" + i.ToString() + filetype, new byte[sizeInBytes]);
-                        filesMade++;
-                        opCreate.UpdateProgress(filesMade, Int32.Parse(numOfFiles));
-                    }
-                    opCreate.UpdateText("Done!");
-                    MessageBox.Show($"Successfully made {filesMade} {sizeInMB}MB {filetype} files in {directory}");
-                    createFilesOpsRunning--;
-                    opCreate.Exit();
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    MessageBox.Show("Error: Directory not found");
-                    return;
-                }
-            });
-            opCreate.Dispatcher.BeginInvoke(new Action(() => threadCreateFiles.Start()));
-
-        }
 
         // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -133,11 +60,11 @@ namespace Filesharp
             }
             else if (operationToExecute == delete)
             {
-                startDelete(textbox1.Text, textbox2.Text);
+                DeleteMethods.startDelete(textbox1.Text, textbox2.Text, isRecursive);
             }
             else if (operationToExecute == createFiles)
             {
-                startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
+                CreateMethods.startCreateFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
             }
             else if (operationToExecute == sort)
             {
@@ -190,10 +117,7 @@ namespace Filesharp
             }
         }
 
-        private void checkbox_Recursive_Checked(object sender, RoutedEventArgs e)
-        {
-        }
-
+        // When the Recursive checkbox is clicked, set isRecursive to false if unchecked, or true if checked.
         private void checkbox_Recursive_Click(object sender, RoutedEventArgs e)
         {
             isRecursive = checkbox_Recursive.IsChecked.HasValue ? checkbox_Recursive.IsChecked.Value : false;
