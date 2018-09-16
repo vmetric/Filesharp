@@ -12,8 +12,9 @@ namespace Filesharp
     /// (internal) TODO:
     /// 1) Add actual number counts to progress indication
     /// 2) Utilize progress bar
-    /// 3) Make each operation recursive
-    /// 4) Make recursiveness optional
+    /// 3) Add ability to cancel an operation (maybe a button or exit on close window?)
+    /// 4) Add confirmation dialogue after an operation finishes (for Move, Delete, and Sort)
+    /// 5) Maybe a speed indicator w/ an ETA?
 
     public partial class MainWindow : Window
     {
@@ -47,7 +48,6 @@ namespace Filesharp
         {
             control.Visibility = Visibility.Visible;
         } 
-
 
         // When "execute" button is clicked, runs the appropriate method based on what is selected in the comboBox.
         private void button_Execute_Click(object sender, RoutedEventArgs e)
@@ -83,6 +83,7 @@ namespace Filesharp
             {
                 hideControl(textbox4);
                 showControl(textbox3);
+                showControl(checkbox_Recursive);
 
                 textbox1.Text = "Source directory (e.g., C:\\1\\)";
                 textbox2.Text = "Destination directory (e.g., C:\\2\\";
@@ -91,11 +92,13 @@ namespace Filesharp
             {
                 hideControl(textbox3);
                 hideControl(textbox4);
+                showControl(checkbox_Recursive);
 
                 textbox1.Text = "Directory to delete files from (e.g., C:\\1\\)";
                 textbox2.Text = "Filetype to delete (e.g., .png)";
             } else if (comboBox1.SelectedIndex == createFiles)
             {
+                hideControl(checkbox_Recursive);
                 showControl(textbox3);
                 showControl(textbox4);
 
@@ -107,6 +110,7 @@ namespace Filesharp
             {
                 hideControl(textbox3);
                 hideControl(textbox4);
+                showControl(checkbox_Recursive);
 
                 textbox1.Text = "Directory containing unsorted files (e.g., C:\\1\\)";
                 textbox2.Text = "Directory to place sorted files (e.g., C:\\2\\)";

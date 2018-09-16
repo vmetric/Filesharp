@@ -7,6 +7,7 @@ namespace Filesharp.Operations
 {
     class Delete
     {
+        // Int to keep track of running Delete operations.
         int deleteOpsRunning = 0;
 
         // Deletes files of a given filetype from a given directory.
@@ -61,6 +62,5 @@ namespace Filesharp.Operations
             });
             opDelete.Dispatcher.BeginInvoke(new Action(() => threadDelete.Start()));
         }
-
     }
 }

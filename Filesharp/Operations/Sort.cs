@@ -8,6 +8,7 @@ namespace Filesharp.Operations
 {
     public class Sort
     {
+        // Int to keep track of running Sort operations.
         int sortOpsRunning = 0;
 
         public void startSort(string dirToSortFrom, string dirToSortTo, bool isRecursive)

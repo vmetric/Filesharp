@@ -7,8 +7,10 @@ namespace Filesharp.Operations
 {
     class Move
     {
+        // Int to keep track of running Move operations.
         int moveOpsRunning = 0;
 
+        // Function that actually executes the moving.
         public void startMove(string sourceDirectory, string destDirectory, string filetype, bool isRecursive)
         {
             Operation_is_running opMove = new Operation_is_running();
@@ -48,7 +50,6 @@ namespace Filesharp.Operations
                         filesMoved++;
                         opMove.UpdateProgress(filesMoved, filesToMove.Length);
                     }
-                    opMove.UpdateText("Done!");
                     moveOpsRunning--;
                     opMove.Exit();
                 }

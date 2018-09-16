@@ -7,6 +7,7 @@ namespace Filesharp.Operations
 {
     class Create_Files
     {
+        // Int to keep track of running Create Files operations.
         int createFilesOpsRunning = 0;
 
         // Creates a given number of files of a given size and filetype in a given directory.
@@ -14,9 +15,8 @@ namespace Filesharp.Operations
         {
             Operation_is_running opCreate = new Operation_is_running();
 
-            createFilesOpsRunning++;
-
             opCreate.Open("Create", $"Creating {numOfFiles} {sizeInMB}MB {filetype} files in {directory}, please wait", "Creating_files", createFilesOpsRunning);
+            createFilesOpsRunning++;
 
             Thread threadCreateFiles = new Thread(() =>
             {
