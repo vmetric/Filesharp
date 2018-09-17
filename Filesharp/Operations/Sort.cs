@@ -10,12 +10,14 @@ namespace Filesharp.Operations
     {
         // Int to keep track of running Sort operations.
         int sortOpsRunning = 0;
+        int filesToSort = 0;
+        int filesSorted = 0;
+        Operation_is_running opSort = new Operation_is_running();
 
         public void startSort(string dirToSortFrom, string dirToSortTo, bool isRecursive)
         {
             // Look into Dictionary for optimization
 
-            Operation_is_running opSort = new Operation_is_running();
             DirectoryInfo sourceDir = new DirectoryInfo(dirToSortFrom);
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
 
@@ -80,6 +82,7 @@ namespace Filesharp.Operations
                 {
                     picturesToSort.Add(file);
                     picsToSort++;
+                    filesToSort++;
                 }
             }
 
@@ -88,6 +91,8 @@ namespace Filesharp.Operations
             {
                 File.Move(sourceDir.ToString() + "\\" + picToSort.ToString(), picDir + picToSort.ToString());
                 picsSorted++;
+                filesSorted++;
+                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortDocuments(string sourceDirectory, string destinationDirectory)
@@ -111,6 +116,7 @@ namespace Filesharp.Operations
                 {
                     documentsToSort.Add(file);
                     docsToSort++;
+                    filesToSort++;
                 }
             }
 
@@ -119,6 +125,8 @@ namespace Filesharp.Operations
             {
                 File.Move(sourceDir + docToSort.ToString(), docDir + docToSort.ToString());
                 docsSorted++;
+                filesSorted++;
+                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortVideos(string sourceDirectory, string destinationDirectory)
@@ -142,6 +150,7 @@ namespace Filesharp.Operations
                 {
                     videosToSort.Add(file);
                     vidsToSort++;
+                    filesToSort++;
                 }
             }
 
@@ -150,6 +159,8 @@ namespace Filesharp.Operations
             {
                 File.Move(sourceDir.ToString() + "\\" + vidToSort.ToString(), vidDir + vidToSort.ToString());
                 vidsSorted++;
+                filesSorted++;
+                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortAudio(string sourceDirectory, string destinationDirectory)
@@ -173,6 +184,7 @@ namespace Filesharp.Operations
                 {
                     audioToSort.Add(file);
                     audToSort++;
+                    filesToSort++;
                 }
             }
 
@@ -181,6 +193,8 @@ namespace Filesharp.Operations
             {
                 File.Move(sourceDirectory + audioFile.ToString(), audDir + audioFile.ToString());
                 audSorted++;
+                filesSorted++;
+                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
     }
