@@ -66,7 +66,7 @@ namespace Filesharp.Operations
             // Declarations
             int picsToSort = 0;
             int picsSorted = 0;
-            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff" };
+            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff", ".bmp" };
             string picDir = destinationDirectory + "Pictures\\";
             List<FileInfo> picturesToSort = new List<FileInfo>();
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
@@ -100,7 +100,7 @@ namespace Filesharp.Operations
             // Declarations
             int docsToSort = 0;
             int docsSorted = 0;
-            string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf" };
+            string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf", ".xls", ".rtf", ".ppt", ".pptx" };
             string docDir = destinationDirectory + "Documents\\";
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
             List<FileInfo> documentsToSort = new List<FileInfo>();
