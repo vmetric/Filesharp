@@ -15,6 +15,10 @@ namespace Filesharp
     /// 3) Add ability to cancel an operation (maybe a button or exit on close window?)
     /// 4) Add confirmation dialogue after an operation finishes (for Move, Delete, and Sort)
     /// 5) Maybe a speed indicator w/ an ETA?
+    /// 
+    /// (internal) BUGS:
+    /// 1) *MASSIVE* Memory usage when deleting large amounts of files 
+    /// (experienced when attempting to delete more than 50k files totalling over 30GB of space)
 
     public partial class MainWindow : Window
     {

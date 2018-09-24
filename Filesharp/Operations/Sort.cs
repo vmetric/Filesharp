@@ -7,6 +7,9 @@ using System.Collections.Generic;
 namespace Filesharp.Operations
 {
     public class Sort
+
+        /// Need to add:
+        /// .svg
     {
         // Int to keep track of running Sort operations.
         int sortOpsRunning = 0;

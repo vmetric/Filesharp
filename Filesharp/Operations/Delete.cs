@@ -2,6 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Filesharp.Operations
 {
@@ -16,6 +17,7 @@ namespace Filesharp.Operations
             Operation_is_running opDelete = new Operation_is_running();
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
+            //List<string> subDirsList = new List<string>(Directory.EnumerateDirectories(sourceDir.ToString()));
 
             if (deleteOpsRunning == 0)
             {
@@ -42,22 +44,22 @@ namespace Filesharp.Operations
             Thread threadDelete = new Thread(() =>
             {
                 int filesDeleted = 0;
-                FileInfo[] filesToDelete = sourceDir.GetFiles("*" + filetype);
+                var filesToDelete = Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype);
+
                 try
                 {
-                    foreach (FileInfo fileToDelete in filesToDelete)
+                    foreach(var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                     {
-                        File.Delete(sourceDirectory + fileToDelete.ToString());
+                        MessageBox.Show(file.ToString());
+                        File.Delete(file.ToString());
                         filesDeleted++;
-                        opDelete.UpdateProgress(filesDeleted, filesToDelete.Length);
                     }
                     deleteOpsRunning--;
                     opDelete.Exit();
                 }
-                catch (DirectoryNotFoundException)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Error: Directory not found");
-                    return;
+                    MessageBox.Show(ex.ToString());
                 }
             });
             opDelete.Dispatcher.BeginInvoke(new Action(() => threadDelete.Start()));
