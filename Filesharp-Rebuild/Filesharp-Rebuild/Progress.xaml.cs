@@ -10,28 +10,22 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Filesharp_Rebuild
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Progress.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Progress : Window
     {
-        Operations ops = new Operations();
-
-        public MainWindow()
+        public Progress()
         {
             InitializeComponent();
         }
-
-
-
-        private void buttonExecuteClick(object sender, RoutedEventArgs e)
+        public void updateProgress(double filesProcessed)
         {
-            ops.moveFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+            labelProgress.Content = $"Files processed: {filesProcessed}";
         }
     }
 }
