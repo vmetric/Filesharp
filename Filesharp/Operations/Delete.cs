@@ -17,15 +17,15 @@ namespace Filesharp.Operations
             Operation_is_running opDelete = new Operation_is_running();
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
-            //List<string> subDirsList = new List<string>(Directory.EnumerateDirectories(sourceDir.ToString()));
+            Thread opDeleteThread = new Thread(() => opDelete.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait", "Delete", deleteOpsRunning));  
 
             if (deleteOpsRunning == 0)
             {
-                opDelete.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait", "Delete", deleteOpsRunning);
+                opDeleteThread.Start();
             }
             else if (deleteOpsRunning > 0 && !isRecursive)
             {
-                opDelete.Open("Delete", $"Deleting all {filetype} files from {sourceDirectory}, please wait", "Delete", deleteOpsRunning);
+                opDeleteThread.Start();
             }
             else
             {
@@ -50,9 +50,10 @@ namespace Filesharp.Operations
                 {
                     foreach(var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                     {
-                        MessageBox.Show(file.ToString());
+                        
                         File.Delete(file.ToString());
                         filesDeleted++;
+                        opDelete.UpdateFilesProcessed(filesDeleted);
                     }
                     deleteOpsRunning--;
                     opDelete.Exit();

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,6 +17,7 @@ namespace Filesharp
     /// (internal) BUGS:
     /// 1) *MASSIVE* Memory usage when deleting large amounts of files 
     /// (experienced when attempting to delete more than 50k files totalling over 30GB of space)
+    /// 2) Program does not completely exit on window close. Maybe a missed setting somewhere?
 
     public partial class MainWindow : Window
     {

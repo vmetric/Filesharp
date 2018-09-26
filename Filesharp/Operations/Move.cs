@@ -46,6 +46,7 @@ namespace Filesharp.Operations
                 {
                     foreach (FileInfo fileToMove in filesToMove)
                     {
+                        
                         File.Move(sourceDirectory + fileToMove.ToString(), destDirectory + fileToMove.ToString());
                         filesMoved++;
                         opMove.UpdateProgress(filesMoved, filesToMove.Length);

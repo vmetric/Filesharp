@@ -7,14 +7,10 @@ using System.Collections.Generic;
 namespace Filesharp.Operations
 {
     public class Sort
-
-        /// Need to add:
-        /// .svg
     {
+        double filesSorted = 0;
         // Int to keep track of running Sort operations.
         int sortOpsRunning = 0;
-        int filesToSort = 0;
-        int filesSorted = 0;
         Operation_is_running opSort = new Operation_is_running();
 
         public void startSort(string dirToSortFrom, string dirToSortTo, bool isRecursive)
@@ -23,14 +19,15 @@ namespace Filesharp.Operations
 
             DirectoryInfo sourceDir = new DirectoryInfo(dirToSortFrom);
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
+            Thread opSortThread = new Thread(() => opSort.Open($"Sorting from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning));
 
             if (sortOpsRunning == 0)
             {
-                opSort.Open($"Sorting from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
+                opSortThread.Start();
             }
             else if (sortOpsRunning > 0 && !isRecursive)
             {
-                opSort.Open($"Sorting from {dirToSortFrom} to {dirToSortTo}", "Sorting files, please wait", "Sort", sortOpsRunning);
+                opSortThread.Start();
             }
             else
             {
@@ -42,7 +39,11 @@ namespace Filesharp.Operations
             {
                 foreach (DirectoryInfo dir in subDirs)
                 {
-                    startSort(dirToSortFrom + dir.ToString() + "\\", dirToSortTo, isRecursive);
+                    //Thread sortThread = new Thread(() =>
+                    //{
+                        startSort(dirToSortFrom + dir.ToString() + "\\", dirToSortTo, isRecursive);
+                    //});
+                    //sortThread.Start();
                 }
             }
 
@@ -57,85 +58,64 @@ namespace Filesharp.Operations
                 } catch (Exception exc)
                 {
                     MessageBox.Show($"Error sorting: {exc}");
+                    
                     return;
                 }
                 sortOpsRunning--;
                 opSort.Exit();
             });
-            opSort.Dispatcher.BeginInvoke((Action)delegate { threadSort.Start(); });
+            //opSort.Dispatcher.BeginInvoke((Action)delegate {  });
+            threadSort.Start();
         }       
         public void sortPictures(string sourceDirectory, string destinationDirectory)
         {
             // Declarations
-            int picsToSort = 0;
             int picsSorted = 0;
-            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff", ".bmp" };
+            string[] pictureFiletypes = { ".jpg", ".jpeg", ".png", ".gif", ".tiff", ".bmp", ".svg" };
             string picDir = destinationDirectory + "Pictures\\";
-            List<FileInfo> picturesToSort = new List<FileInfo>();
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
 
             // Create pictures directory
             Directory.CreateDirectory(picDir);
 
-            // Gather pictures to move
-            for (int i = 0; i < pictureFiletypes.Length; i++)
+            foreach (string filetype in pictureFiletypes)
             {
-                FileInfo[] filesToAdd = sourceDir.GetFiles("*" + pictureFiletypes[i]);
-                foreach (FileInfo file in filesToAdd)
+                foreach (var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                 {
-                    picturesToSort.Add(file);
-                    picsToSort++;
-                    filesToSort++;
+                    FileInfo feel = new FileInfo(file);
+                    feel.MoveTo(picDir + feel.Name);
+                    picsSorted++;
+                    filesSorted++;
+                    opSort.UpdateFilesProcessed(filesSorted);
                 }
-            }
-
-            // Sort pictures
-            foreach (FileInfo picToSort in picturesToSort)
-            {
-                File.Move(sourceDir.ToString() + "\\" + picToSort.ToString(), picDir + picToSort.ToString());
-                picsSorted++;
-                filesSorted++;
-                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortDocuments(string sourceDirectory, string destinationDirectory)
         {
             // Declarations
-            int docsToSort = 0;
             int docsSorted = 0;
             string[] documentFiletypes = { ".txt", ".doc", ".docx", ".xml", ".xlsx", ".pdf", ".xls", ".rtf", ".ppt", ".pptx" };
             string docDir = destinationDirectory + "Documents\\";
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
-            List<FileInfo> documentsToSort = new List<FileInfo>();
 
             // Create documents directory
             Directory.CreateDirectory(docDir);
 
-            // Gather documents to move
-            for (int i = 0; i < documentFiletypes.Length; i++)
+            foreach (string filetype in documentFiletypes)
             {
-                FileInfo[] filesToAdd = sourceDir.GetFiles("*" + documentFiletypes[i]);
-                foreach (FileInfo file in filesToAdd)
+                foreach (var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                 {
-                    documentsToSort.Add(file);
-                    docsToSort++;
-                    filesToSort++;
+                    FileInfo feel = new FileInfo(file);
+                    feel.MoveTo(docDir + feel.Name);
+                    docsSorted++;
+                    filesSorted++;
+                    opSort.UpdateFilesProcessed(filesSorted);
                 }
-            }
-
-            // Sort documents
-            foreach (FileInfo docToSort in documentsToSort)
-            {
-                File.Move(sourceDir + docToSort.ToString(), docDir + docToSort.ToString());
-                docsSorted++;
-                filesSorted++;
-                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortVideos(string sourceDirectory, string destinationDirectory)
         {
             // Declarations
-            int vidsToSort = 0;
             int vidsSorted = 0;
             string[] videoFiletypes = { ".mp4", ".mov", ".wmv", ".avi" };
             string vidDir = destinationDirectory + "Videos\\";
@@ -145,31 +125,21 @@ namespace Filesharp.Operations
             // Create video directory
             Directory.CreateDirectory(vidDir);
 
-            // Gather videos to sort
-            for (int i = 0; i < videoFiletypes.Length; i++)
+            foreach (string filetype in videoFiletypes)
             {
-                FileInfo[] filesToAdd = sourceDir.GetFiles("*" + videoFiletypes[i]);
-                foreach (FileInfo file in filesToAdd)
+                foreach (var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                 {
-                    videosToSort.Add(file);
-                    vidsToSort++;
-                    filesToSort++;
+                    FileInfo feel = new FileInfo(file);
+                    feel.MoveTo(vidDir + feel.Name);
+                    vidsSorted++;
+                    filesSorted++;
+                    opSort.UpdateFilesProcessed(filesSorted);
                 }
-            }
-
-            // Sort videos
-            foreach (FileInfo vidToSort in videosToSort)
-            {
-                File.Move(sourceDir.ToString() + "\\" + vidToSort.ToString(), vidDir + vidToSort.ToString());
-                vidsSorted++;
-                filesSorted++;
-                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
         public void sortAudio(string sourceDirectory, string destinationDirectory)
         {
             // Declarations
-            int audToSort = 0;
             int audSorted = 0;
             string[] audioFiletypes = { ".mp3", ".wav", ".aac" };
             string audDir = destinationDirectory + "Audio\\";
@@ -179,25 +149,16 @@ namespace Filesharp.Operations
             // Create audio directory
             Directory.CreateDirectory(audDir);
 
-            // Gather audio files to move
-            for (int i = 0; i < audioFiletypes.Length; i++)
+            foreach (string filetype in audioFiletypes)
             {
-                FileInfo[] filesToAdd = sourceDir.GetFiles("*" + audioFiletypes[i]);
-                foreach (FileInfo file in filesToAdd)
+                foreach (var file in Directory.EnumerateFiles(@sourceDir.ToString(), "*" + filetype))
                 {
-                    audioToSort.Add(file);
-                    audToSort++;
-                    filesToSort++;
+                    FileInfo feel = new FileInfo(file);
+                    feel.MoveTo(audDir + feel.Name);
+                    audSorted++;
+                    filesSorted++;
+                    opSort.UpdateFilesProcessed(filesSorted);
                 }
-            }
-
-            // Sort audio
-            foreach (FileInfo audioFile in audioToSort)
-            {
-                File.Move(sourceDirectory + audioFile.ToString(), audDir + audioFile.ToString());
-                audSorted++;
-                filesSorted++;
-                opSort.UpdateProgress(filesSorted, filesToSort);
             }
         }
     }
