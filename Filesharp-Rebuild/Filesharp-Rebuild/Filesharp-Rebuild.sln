@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesharp-Rebuild", "Filesharp-Rebuild.csproj", "{B388303B-5905-4CC2-AAE8-4C4756D80685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B388303B-5905-4CC2-AAE8-4C4756D80685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B388303B-5905-4CC2-AAE8-4C4756D80685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B388303B-5905-4CC2-AAE8-4C4756D80685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B388303B-5905-4CC2-AAE8-4C4756D80685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5490A3ED-7B86-47F4-AF71-657E0AFDA98F}
+	EndGlobalSection
+EndGlobal
