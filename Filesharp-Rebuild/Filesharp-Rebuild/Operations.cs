@@ -1,18 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Filesharp_Rebuild
 {
@@ -55,6 +45,45 @@ namespace Filesharp_Rebuild
             else
             {
                 moveOpProgress.Close();
+            }
+        }
+        public void deleteFiles(string sourceDirectory, string filetype, bool recursive)
+        {
+            // Var declarations
+            double filesDeleted = 0.0;
+            int runningDeleteOps = 0;
+            DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
+            Progress deleteOpProgress = new Progress();
+
+            // Set values for the progress windows
+            // This (hopefully) allows for multiple progress windows to be open without interfering with each other
+            deleteOpProgress.Name = $"Move #{runningDeleteOps}";
+            deleteOpProgress.Title = $"Move #{runningDeleteOps}";
+            deleteOpProgress.Show();
+
+            // First, delete all files from the source directory
+            foreach (var file in sourceDir.EnumerateFiles("*" + filetype))
+            {
+                file.Delete();
+                filesDeleted++;
+                deleteOpProgress.updateProgress(filesDeleted);
+            }
+
+            // Next, create a new array and place all subdirs in it.
+            // The array is declared here to create the array with all elements at creation.
+            DirectoryInfo[] subDirs = sourceDir.GetDirectories();
+
+            // If there are subdirectories, iterate through subDirs[], calling deleteFiles on each one.
+            if (subDirs.Length > 0)
+            {
+                foreach (DirectoryInfo dir in subDirs)
+                {
+                    deleteFiles(dir.ToString(), filetype, recursive);
+                }
+            }
+            else
+            {
+                deleteOpProgress.Close();
             }
         }
     }
