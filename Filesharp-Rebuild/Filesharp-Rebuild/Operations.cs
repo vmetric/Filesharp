@@ -90,16 +90,26 @@ namespace Filesharp_Rebuild
                 deleteOpProgress.Close();
             }
         }
-        public void createFiles(string directory, string filetype, string filesizeInGB, string filecount)
+        public void createFiles(string directory, string filetype, string filesizeInGB, string numOfFilesToCreate)
         {
             // Var declarations
             double filesCreated = 0.0;
             int runningCreateOps = 0;
-            double filesToCreate = Convert.ToDouble(filecount);
+            uint filecount = 0;
             ulong filesizeInBytes = 0;
+
             try
             {
-                 //filesizeInBytes = (Convert.ToDouble(filecount) * Math.Pow(10, 9));
+                filecount = UInt32.Parse(numOfFilesToCreate);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error converting numOfFilesToCreate to UInt32: {ex}");
+                return;
+            }
+            try
+            {
+                 filesizeInBytes = Convert.ToUInt64(filecount * Math.Pow(10, 9));
             }
             catch (Exception ex)
             {
@@ -116,7 +126,7 @@ namespace Filesharp_Rebuild
             runningCreateOps++;
 
             // Create files
-            for (uint i = 0; i < filesToCreate; i++)
+            for (uint i = 0; i < filecount; i++)
             {
                 File.Create(Path.Combine(directory, $"file{i}"));
                 File.WriteAllBytes(Path.Combine(directory, $"file{i}", filetype), new byte[filesizeInBytes]);
