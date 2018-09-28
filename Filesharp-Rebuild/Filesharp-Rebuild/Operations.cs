@@ -7,7 +7,11 @@ using System.Windows;
 namespace Filesharp_Rebuild
 {
     class Operations
-    {
+    { 
+        /// <summary>
+        /// Look into arraylist for gathering array of files
+        /// </summary>
+
         public void moveFiles(string sourceDirectory, string destinationDirectory, string filetype, bool recursive)
         {
             // Var declarations
@@ -25,7 +29,7 @@ namespace Filesharp_Rebuild
             // First, move all files out of the source directory
             foreach(var file in sourceDir.EnumerateFiles("*" + filetype))
             {
-                file.MoveTo(destinationDirectory + file.ToString());
+                file.MoveTo(Path.Combine(destinationDirectory, file.ToString()));
                 filesMoved++;
                 moveOpProgress.updateProgress(filesMoved);
             }
@@ -85,6 +89,40 @@ namespace Filesharp_Rebuild
             {
                 deleteOpProgress.Close();
             }
+        }
+        public void createFiles(string directory, string filetype, string filesizeInGB, string filecount)
+        {
+            // Var declarations
+            double filesCreated = 0.0;
+            int runningCreateOps = 0;
+            double filesToCreate = Convert.ToDouble(filecount);
+            ulong filesizeInBytes = 0;
+            try
+            {
+                 //filesizeInBytes = (Convert.ToDouble(filecount) * Math.Pow(10, 9));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error converting filesizeInGB to Double: {ex}");
+            }
+            DirectoryInfo dir = new DirectoryInfo(directory);
+            Progress createOpProgress = new Progress();
+
+            // Set values for the progress windows
+            // This (hopefully) allows for multiple progress windows to be open without interfering with each other
+            createOpProgress.Name = $"Move #{createOpProgress}";
+            createOpProgress.Title = $"Move #{createOpProgress}";
+            createOpProgress.Show();
+            runningCreateOps++;
+
+            // Create files
+            for (uint i = 0; i < filesToCreate; i++)
+            {
+                File.Create(Path.Combine(directory, $"file{i}"));
+                File.WriteAllBytes(Path.Combine(directory, $"file{i}", filetype), new byte[filesizeInBytes]);
+                filesCreated++;
+            }
+             createOpProgress.Close();
         }
     }
 }

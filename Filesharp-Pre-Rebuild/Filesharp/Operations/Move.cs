@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading;
 using System.IO;
 using System.Windows;
@@ -41,7 +42,8 @@ namespace Filesharp.Operations
             Thread threadMove = new Thread(() =>
             {
                 int filesMoved = 0;
-                FileInfo[] filesToMove = sourceDir.GetFiles("*" + filetype);
+                ArrayList filesToMove = new ArrayList();
+                filesToMove.Add(sourceDir.GetFiles("*" + filetype));
                 try
                 {
                     foreach (FileInfo fileToMove in filesToMove)
@@ -49,7 +51,7 @@ namespace Filesharp.Operations
                         
                         File.Move(sourceDirectory + fileToMove.ToString(), destDirectory + fileToMove.ToString());
                         filesMoved++;
-                        opMove.UpdateProgress(filesMoved, filesToMove.Length);
+                        opMove.UpdateProgress(filesMoved, filesToMove.Count);
                     }
                     moveOpsRunning--;
                     opMove.Exit();
