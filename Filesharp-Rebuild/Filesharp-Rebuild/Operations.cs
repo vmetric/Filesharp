@@ -134,5 +134,45 @@ namespace Filesharp_Rebuild
             }
              createOpProgress.Close();
         }
+        //public void sortFiles(string sourceDirectory, string destinationDirectory, string intensity, bool recursive)
+        //{
+        //    // Var declarations
+        //    double filesSorted = 0.0;
+        //    int runningSortOps = 0;
+        //    DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
+        //    Progress sortOpProgress = new Progress();
+
+        //    // Set values for the progress windows
+        //    // This (hopefully) allows for multiple progress windows to be open without interfering with each other
+        //    sortOpProgress.Name = $"Move #{runningSortOps}";
+        //    sortOpProgress.Title = $"Move #{runningSortOps}";
+        //    sortOpProgress.Show();
+
+        //    // First, move all files out of the source directory
+        //    foreach (var file in sourceDir.EnumerateFiles("*" + filetype))
+        //    {
+        //        file.MoveTo(Path.Combine(destinationDirectory, file.ToString()));
+        //        filesMoved++;
+        //        moveOpProgress.updateProgress(filesMoved);
+        //    }
+
+        //    // Next, create a new array and place all subdirs in it.
+        //    // The array is declared here to create the array with all elements at creation.
+        //    DirectoryInfo[] subDirs = sourceDir.GetDirectories();
+
+        //    // If there are subdirectories, iterate through subDirs[], calling moveFiles on each one.
+        //    if (subDirs.Length > 0)
+        //    {
+        //        foreach (DirectoryInfo dir in subDirs)
+        //        {
+        //            moveFiles(dir.ToString(), destinationDirectory, filetype, recursive);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        moveOpProgress.Close();
+        //    }
+        //}
+
     }
 }
