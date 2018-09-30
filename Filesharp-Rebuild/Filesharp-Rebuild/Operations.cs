@@ -22,8 +22,8 @@ namespace Filesharp_Rebuild
 
             // Set values for the progress windows
             // This (hopefully) allows for multiple progress windows to be open without interfering with each other
-            moveOpProgress.Name = $"Move {runningMoveOps}";
-            moveOpProgress.Title = $"Move {runningMoveOps}";
+            moveOpProgress.Name = $"Move{runningMoveOps}";
+            moveOpProgress.Title = $"Move{runningMoveOps}";
             moveOpProgress.Show();
 
             // First, move all files out of the source directory
@@ -61,8 +61,8 @@ namespace Filesharp_Rebuild
 
             // Set values for the progress windows
             // This (hopefully) allows for multiple progress windows to be open without interfering with each other
-            deleteOpProgress.Name = $"Delete {runningDeleteOps}";
-            deleteOpProgress.Title = $"Delete {runningDeleteOps}";
+            deleteOpProgress.Name = $"Delete{runningDeleteOps}";
+            deleteOpProgress.Title = $"Delete{runningDeleteOps}";
             deleteOpProgress.Show();
 
             // First, delete all files from the source directory
@@ -120,8 +120,8 @@ namespace Filesharp_Rebuild
 
             // Set values for the progress windows
             // This (hopefully) allows for multiple progress windows to be open without interfering with each other
-            createOpProgress.Name = $"Create {createOpProgress}";
-            createOpProgress.Title = $"Create {createOpProgress}";
+            createOpProgress.Name = $"Create{createOpProgress}";
+            createOpProgress.Title = $"Create{createOpProgress}";
             createOpProgress.Show();
             runningCreateOps++;
 
