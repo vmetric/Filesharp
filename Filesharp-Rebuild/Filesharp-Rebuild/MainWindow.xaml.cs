@@ -20,8 +20,15 @@ namespace Filesharp_Rebuild
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Declarations
         Operations ops = new Operations();
+        // Operations index
+        const int move = 0;
+        const int delete = 1;
+        const int create = 2;
+        const int sort = 3;
 
+        // Methods
         public MainWindow()
         {
             InitializeComponent();
@@ -31,7 +38,26 @@ namespace Filesharp_Rebuild
 
         private void buttonExecuteClick(object sender, RoutedEventArgs e)
         {
-            ops.moveFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+            if (comboBox_Operations.SelectedIndex == move)
+            {
+                ops.moveFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+            }
+            else if (comboBox_Operations.SelectedIndex == delete)
+            {
+                ops.deleteFiles(textbox1.Text, textbox3.Text, false);
+            }
+            else if (comboBox_Operations.SelectedIndex == create)
+            {
+                ops.createFiles(textbox1.Text, textbox2.Text, textbox3.Text, textbox4.Text);
+            }
+            else if (comboBox_Operations.SelectedIndex == sort)
+            {
+                //ops.sortFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+            }
+            else
+            {
+                MessageBox.Show("Please select an operation to execute");
+            }
         }
     }
 }

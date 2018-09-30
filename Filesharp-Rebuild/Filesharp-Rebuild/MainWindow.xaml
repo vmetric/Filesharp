@@ -14,7 +14,12 @@
         <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="167"/>
         <CheckBox Content="Recursive" HorizontalAlignment="Left" Margin="374,95,0,0" VerticalAlignment="Top"/>
         <Button x:Name="buttonExecute" Content="Execute" HorizontalAlignment="Left" Margin="10,252,0,0" VerticalAlignment="Top" Width="75" Click="buttonExecuteClick"/>
-        <ComboBox HorizontalAlignment="Left" Margin="57,183,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="comboBox_Operations" HorizontalAlignment="Left" Margin="57,183,0,0" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Content="Move"/>
+            <ComboBoxItem Content="Delete"/>
+            <ComboBoxItem Content="Create"/>
+            <ComboBoxItem Content="Sort"/>
+        </ComboBox>
 
     </Grid>
 </Window>
