@@ -44,7 +44,7 @@ namespace Filesharp_Rebuild
             }
             else if (comboBox_Operations.SelectedIndex == delete)
             {
-                ops.deleteFiles(textbox1.Text, textbox3.Text, false);
+                ops.deleteFiles(textbox1.Text, textbox2.Text, false);
             }
             else if (comboBox_Operations.SelectedIndex == create)
             {

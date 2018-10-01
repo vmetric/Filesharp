@@ -43,7 +43,7 @@ namespace Filesharp_Rebuild
             {
                 foreach (DirectoryInfo dir in subDirs)
                 {
-                    moveFiles(dir.ToString(), destinationDirectory, filetype, recursive);
+                    moveFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), destinationDirectory, filetype, recursive);
                 }
             }
             else
@@ -82,7 +82,7 @@ namespace Filesharp_Rebuild
             {
                 foreach (DirectoryInfo dir in subDirs)
                 {
-                    deleteFiles(dir.ToString(), filetype, recursive);
+                    deleteFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), filetype, recursive);
                 }
             }
             else
