@@ -38,18 +38,27 @@ namespace Filesharp_Rebuild
             // The array is declared here to create the array with all elements at creation.
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
             
-            // If there are subdirectories, iterate through subDirs[], calling moveFiles on each one.
-            if (subDirs.Length > 0)
+            // Checks if recursion is true. If it is:
+            // Check if there are subdirectories, iterate through subDirs[], calling moveFiles on each one.
+            if (recursive)
             {
-                foreach (DirectoryInfo dir in subDirs)
+                if (subDirs.Length > 0)
                 {
-                    moveFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), destinationDirectory, filetype, recursive);
+                    foreach (DirectoryInfo dir in subDirs)
+                    {
+                        moveFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), destinationDirectory, filetype, recursive);
+                    }
+                }
+                else
+                {
+                    moveOpProgress.Close();
                 }
             }
             else
             {
                 moveOpProgress.Close();
             }
+
         }
         public void deleteFiles(string sourceDirectory, string filetype, bool recursive)
         {
@@ -77,12 +86,21 @@ namespace Filesharp_Rebuild
             // The array is declared here to create the array with all elements at creation.
             DirectoryInfo[] subDirs = sourceDir.GetDirectories();
 
-            // If there are subdirectories, iterate through subDirs[], calling deleteFiles on each one.
-            if (subDirs.Length > 0)
+            // Check if recursion is true. If it is:
+            // Check if there are subdirectories, iterate through subDirs[], calling deleteFiles on each one.
+            if (recursive)
             {
-                foreach (DirectoryInfo dir in subDirs)
+                if (subDirs.Length > 0)
                 {
-                    deleteFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), filetype, recursive);
+                    foreach (DirectoryInfo dir in subDirs)
+                    {
+                        deleteFiles(Path.Combine(sourceDirectory.ToString(), dir.ToString()), filetype, recursive);
+                    }
+                    deleteOpProgress.Close();
+                }
+                else
+                {
+                    deleteOpProgress.Close();
                 }
             }
             else
