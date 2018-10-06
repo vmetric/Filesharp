@@ -138,8 +138,8 @@ namespace Filesharp_Rebuild
 
             // Set values for the progress windows
             // This (hopefully) allows for multiple progress windows to be open without interfering with each other
-            createOpProgress.Name = $"Create{createOpProgress}";
-            createOpProgress.Title = $"Create{createOpProgress}";
+            createOpProgress.Name = $"Create{runningCreateOps}";
+            createOpProgress.Title = $"Create{runningCreateOps}";
             createOpProgress.Show();
             runningCreateOps++;
 
