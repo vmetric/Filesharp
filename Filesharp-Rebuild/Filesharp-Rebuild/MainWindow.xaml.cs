@@ -40,7 +40,7 @@ namespace Filesharp_Rebuild
         {
             if (comboBox_Operations.SelectedIndex == move)
             {
-                ops.moveFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+                ops.moveFiles(textbox1.Text, textbox2.Text, textbox3.Text, (bool)checkbox_Recursive.IsChecked);
             }
             else if (comboBox_Operations.SelectedIndex == delete)
             {

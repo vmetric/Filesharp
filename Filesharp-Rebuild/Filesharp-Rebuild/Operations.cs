@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -9,7 +8,14 @@ namespace Filesharp_Rebuild
     class Operations
     { 
         /// <summary>
-        /// Look into arraylist for gathering array of files
+        /// Potential optimizations include:
+        /// Using a List for gathering of files and directories (need System.Collections.Generic)
+        /// 
+        /// Current progress:
+        ///     Move: Fully functional
+        ///     Delete: Unknown
+        ///     Create: Unknown
+        ///     Sort: Not workin
         /// </summary>
 
         public void moveFiles(string sourceDirectory, string destinationDirectory, string filetype, bool recursive)
@@ -59,6 +65,7 @@ namespace Filesharp_Rebuild
                 moveOpProgress.Close();
             }
 
+            moveOpProgress.Close();
         }
         public void deleteFiles(string sourceDirectory, string filetype, bool recursive)
         {
