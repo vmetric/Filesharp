@@ -14,7 +14,7 @@ namespace Filesharp_Rebuild
         /// 
         /// Current progress:
         ///     Move: Fully functional
-        ///     Delete: Unknown
+        ///     Delete: Fully functional
         ///     Create: Unknown
         ///     Sort: Not working
         /// </summary>
