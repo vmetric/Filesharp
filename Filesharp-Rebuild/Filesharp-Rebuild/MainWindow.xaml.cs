@@ -44,7 +44,7 @@ namespace Filesharp_Rebuild
             }
             else if (comboBox_Operations.SelectedIndex == delete)
             {
-                ops.deleteFiles(textbox1.Text, textbox2.Text, false);
+                ops.deleteFiles(textbox1.Text, textbox2.Text, (bool)checkbox_Recursive.IsChecked);
             }
             else if (comboBox_Operations.SelectedIndex == create)
             {
@@ -52,7 +52,7 @@ namespace Filesharp_Rebuild
             }
             else if (comboBox_Operations.SelectedIndex == sort)
             {
-                //ops.sortFiles(textbox1.Text, textbox2.Text, textbox3.Text, false);
+                //ops.sortFiles(textbox1.Text, textbox2.Text, textbox3.Text, (bool)checkbox_Recursive.IsChecked);
             }
             else
             {

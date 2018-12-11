@@ -8,14 +8,15 @@ namespace Filesharp_Rebuild
     class Operations
     { 
         /// <summary>
-        /// Potential optimizations include:
-        /// Using a List for gathering of files and directories (need System.Collections.Generic)
+        /// Potential optimizations:
+        ///     Using a List for gathering of files and directories (need System.Collections.Generic)
+        ///     Don't gather subDirs if not recursive
         /// 
         /// Current progress:
         ///     Move: Fully functional
         ///     Delete: Unknown
         ///     Create: Unknown
-        ///     Sort: Not workin
+        ///     Sort: Not working
         /// </summary>
 
         public void moveFiles(string sourceDirectory, string destinationDirectory, string filetype, bool recursive)
@@ -114,6 +115,7 @@ namespace Filesharp_Rebuild
             {
                 deleteOpProgress.Close();
             }
+            deleteOpProgress.Close();
         }
         public void createFiles(string directory, string filetype, string filesizeInGB, string numOfFilesToCreate)
         {
