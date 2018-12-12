@@ -15,7 +15,7 @@ namespace Filesharp_Rebuild
         /// Current progress:
         ///     Move: Fully functional
         ///     Delete: Fully functional
-        ///     Create: Unknown
+        ///     Create: Not working, need a hard drive to test
         ///     Sort: Not working
         /// </summary>
 
@@ -136,7 +136,7 @@ namespace Filesharp_Rebuild
             }
             try
             {
-                 filesizeInBytes = Convert.ToUInt64(filecount * Math.Pow(10, 9));
+                 filesizeInBytes = Convert.ToUInt64(ulong.Parse(filesizeInGB) * Math.Pow(10, 9));
             }
             catch (Exception ex)
             {
@@ -156,10 +156,11 @@ namespace Filesharp_Rebuild
             for (uint i = 0; i < filecount; i++)
             {
                 File.Create(Path.Combine(directory, $"file{i}"));
-                File.WriteAllBytes(Path.Combine(directory, $"file{i}", filetype), new byte[filesizeInBytes]);
+                File.WriteAllBytes(Path.Combine(directory, $"file{i}") + filetype, new byte[filesizeInBytes]);
                 filesCreated++;
             }
              createOpProgress.Close();
+            
         }
         //public void sortFiles(string sourceDirectory, string destinationDirectory, string intensity, bool recursive)
         //{
