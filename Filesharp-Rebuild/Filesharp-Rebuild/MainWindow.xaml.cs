@@ -59,5 +59,35 @@ namespace Filesharp_Rebuild
                 MessageBox.Show("Please select an operation to execute");
             }
         }
+
+        private void comboBox_Operations_DropDownClosed(object sender, EventArgs e)
+        {
+            if (comboBox_Operations.SelectedIndex == move)
+            {
+                textbox1.Text = "Source directory";
+                textbox2.Text = "Destination directory";
+                textbox3.Text = "Filetype (e.g., .png)";
+                textbox4.Text = "";
+                textbox4.Visibility = Visibility.Hidden;
+
+            }
+            else if (comboBox_Operations.SelectedIndex == delete)
+            {
+                textbox1.Text = "Source directory";
+                textbox2.Text = "Filetype (e.g., .png)";
+                textbox3.Text = "";
+                textbox4.Text = "";
+                textbox3.Visibility = Visibility.Hidden;
+                textbox4.Visibility = Visibility.Hidden;
+            }
+            else if (comboBox_Operations.SelectedIndex == create)
+            {
+
+            }
+            else if (comboBox_Operations.SelectedIndex == sort)
+            {
+
+            }
+        }
     }
 }
