@@ -26,6 +26,7 @@ namespace Filesharp_Rebuild
             int runningMoveOps = 0;
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectory);
             Progress moveOpProgress = new Progress();
+            int duplicateFiles = 0;
 
             // Set values for the progress windows
             // This (hopefully) allows for multiple progress windows to be open without interfering with each other
@@ -34,12 +35,20 @@ namespace Filesharp_Rebuild
             moveOpProgress.Show();
 
             // First, move all files out of the source directory
-            foreach(var file in sourceDir.EnumerateFiles("*" + filetype))
-            {
-                file.MoveTo(Path.Combine(destinationDirectory, file.ToString()));
-                filesMoved++;
-                moveOpProgress.updateProgress(filesMoved);
-            }
+                foreach (var file in sourceDir.EnumerateFiles("*" + filetype))
+                {
+                    try
+                    {
+                        file.MoveTo(Path.Combine(destinationDirectory, file.ToString()));
+                        filesMoved++;
+                        moveOpProgress.updateProgress(filesMoved);
+                    } catch (IOException) when (File.Exists(Path.Combine(destinationDirectory, file.ToString())))
+                    {
+                    duplicateFiles++;
+                    }
+                }
+ 
+
 
             // Next, create a new array and place all subdirs in it.
             // The array is declared here to create the array with all elements at creation.
@@ -58,14 +67,16 @@ namespace Filesharp_Rebuild
                 }
                 else
                 {
+                    MessageBox.Show(duplicateFiles + " files with duplicate filenames");
                     moveOpProgress.Close();
                 }
             }
             else
             {
+                MessageBox.Show(duplicateFiles + " files with duplicate filenames");
                 moveOpProgress.Close();
             }
-
+            MessageBox.Show(duplicateFiles + " files with duplicate filenames");
             moveOpProgress.Close();
         }
         public void deleteFiles(string sourceDirectory, string filetype, bool recursive)

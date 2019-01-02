@@ -68,6 +68,7 @@ namespace Filesharp_Rebuild
                 textbox2.Text = "Destination directory";
                 textbox3.Text = "Filetype (e.g., .png)";
                 textbox4.Text = "";
+                textbox3.Visibility = Visibility.Visible;
                 textbox4.Visibility = Visibility.Hidden;
 
             }
