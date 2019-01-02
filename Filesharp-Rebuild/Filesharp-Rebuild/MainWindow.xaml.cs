@@ -59,7 +59,7 @@ namespace Filesharp_Rebuild
                 textbox4.Text = "";
                 textbox3.Visibility = Visibility.Visible;
                 textbox4.Visibility = Visibility.Hidden;
-
+                checkbox_Recursive.Visibility = Visibility.Visible;
             }
             else if (comboBox_Operations.SelectedIndex == delete)
             {
@@ -69,14 +69,29 @@ namespace Filesharp_Rebuild
                 textbox4.Text = "";
                 textbox3.Visibility = Visibility.Hidden;
                 textbox4.Visibility = Visibility.Hidden;
+                checkbox_Recursive.Visibility = Visibility.Visible;
             }
             else if (comboBox_Operations.SelectedIndex == create)
             {
-
+                textbox1.Text = "Directory";
+                textbox2.Text = "File extension";
+                textbox3.Text = "File size";
+                textbox4.Text = "File count";
+                textbox1.Visibility = Visibility.Visible;
+                textbox2.Visibility = Visibility.Visible;
+                textbox3.Visibility = Visibility.Visible;
+                textbox4.Visibility = Visibility.Visible;
+                checkbox_Recursive.Visibility = Visibility.Hidden;
             }
             else if (comboBox_Operations.SelectedIndex == sort)
             {
-
+                textbox1.Text = "Directory to sort from";
+                textbox2.Text = "Directory to sort to";
+                textbox1.Visibility = Visibility.Visible;
+                textbox2.Visibility = Visibility.Visible;
+                textbox3.Visibility = Visibility.Hidden;
+                textbox4.Visibility = Visibility.Hidden;
+                checkbox_Recursive.Visibility = Visibility.Hidden;
             }
         }
     }
