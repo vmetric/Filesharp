@@ -23,8 +23,6 @@ namespace Filesharp_Rebuild
             InitializeComponent();
         }
 
-
-
         private void buttonExecuteClick(object sender, RoutedEventArgs e)
         {
             if (comboBox_Operations.SelectedIndex == move)
